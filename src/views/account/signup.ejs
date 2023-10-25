@@ -1,51 +1,64 @@
-<script src="/javascripts/hash.js"></script>
-<script>
-    let accountForm = document.forms.accountCreation;
-    accountForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        validateAccountCreation();
-    });
-    async function validateAccountCreation() {
-        let passwordMessage = document.getElementById("passwordMessage");
-        let passwordRepeated = document.getElementById("passwordRepeated");
-        let passwordRepeatedMessage = document.getElementById("passwordRepeatedMessage");
-        passwordMessage.textContent = "";
-        passwordRepeatedMessage.textContent = "";
-        if (accountForm.password.value.length < 8) {
-        passwordMessage.textContent = "Password must be at least 8 characters.";
-        } 
-        else if (accountForm.password.value != passwordRepeated.value) {
-            asswordRepeatedMessage.textContent = "Passwords are not corresponding";
-        } 
-        else {
-            let rawValue = accountForm.password.value;
-            accountForm.password.value = await hashSHA256(rawValue);
-            accountForm.submit();
-            accountForm.password.value = rawValue;
-        }
-    }
-</script>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="/stylesheets/index.css" />
+        <title>Sign up</title>
+        <script src="/javascripts/hash.js"></script>
+    </head>
+    <body>
+        <% if (locals.message)  %>
+        <%- locals.message %>
+        <form name="signupForm" action="/account/signup" method="POST">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><label for="username">Enter username :</label></td>
+                        <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="password">Enter password :</label></td>
+                        <td><input type="password" name="password" value="" /></td>
+                        <td><label id="passwordMessage"></label></td>
+                    </tr>
+                    <tr>
+                        <td><label for="passwordRepeated">Confirm your password :</label></td>
+                        <td><input type="password" id="passwordRepeated" value=""/></td>
+                        <td><label id="passwordRepeatedMessage"></label></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div><input type="submit" value="Sign up"/></div>
+        </form>
 
+        <script type="text/javascript">
+            var accountForm = document.forms.signupForm;
 
-<form name="accountCreation" action="/account/signup" method="POST">
-    <table>
-        <tbody>
-            <tr>
-                <td><label for="username">Enter username :</label></td>
-                <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
-                <td><label><%= locals.message ?? '' %></label></td>
-            </tr>
-            <tr>
-                <td><label for="password">Enter password :</label></td>
-                <td><input type="password" name="password" value="" /></td>
-                <td><label id="passwordMessage"></label></td>
-            </tr>
-            <tr>
-                <td><label for="passwordRepeated">Confirm your password :</label></td>
-                <td><input type="password" id="passwordRepeated" value="" /></td>
-                <td><label id="passwordRepeatedMessage"></label></td>
-            </tr>
-        </tbody>
-    </table>
-    <div><input type="submit" /></div>
-</form>
+            accountForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                validateAccountCreation();
+            });
+
+            async function validateAccountCreation() {
+                let passwordMessage = document.getElementById("passwordMessage");
+                let passwordRepeated = document.getElementById("passwordRepeated");
+                let passwordRepeatedMessage = document.getElementById("passwordRepeatedMessage");
+                passwordMessage.textContent = "";
+                passwordRepeatedMessage.textContent = "";
+                if (accountForm.password.value.length < 8) {
+                    passwordMessage.textContent = "Password must be at least 8 characters.";
+                } 
+                else if (accountForm.password.value != passwordRepeated.value) {
+                    passwordRepeatedMessage.textContent = "Passwords are not corresponding";
+                } 
+                else {
+                    let rawValue = accountForm.password.value;
+                    accountForm.password.value = await hashSHA256(rawValue);
+                    accountForm.submit();
+                    accountForm.password.value = rawValue;
+                }
+            }
+        </script>
+        
+    </body>
+</html>

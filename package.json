@@ -1,5 +1,5 @@
 {
-    "name": "EasyCollab",
+    "name": "easycollab",
     "version": "0.0.1",
     "description": "Tableur collaboratif.",
     "homepage": "somewhere.that.i.used.to.know.com",
@@ -15,10 +15,12 @@
         "dotenv": "*",
         "cookie-parser": "*",
         "mongoose": "*",
-        "method-override": "*"
+        "method-override": "*",
+        "createHash": "*"
     },
     "main": "src/server.js",
     "scripts": { 
-        "start": "nodemon src/server.js"
+        "start": "nodemon src/server.js",
+        "generateDB": "node populatedb"
      }
 }

@@ -1,39 +1,61 @@
 import jwt from "jsonwebtoken";
+import User from "../db/schemas/schemaUser.js"
+import * as crypto from "crypto"
 
-export function signup(req, res) {
+export async function signup(req, res) {
     let { username, password } = req.body;
-    /* let user = forum.users.find((user) => user.username == username);
-    if (user) { 
-        
-    } else {
-        let user = {
-            id: getNewId(),
-            username,
-            password: createHash("sha256").update(password).digest("hex"),
-        };
-        //forum.users.push(user);
-        // ...
 
-        let token = createJWT(user);
+    await User.findOne({username: username})
+    .then((user) => {
+        if(user){
+            res.render("account/signup", { message: "<p>Username already taken !</p>" });
+            return;
+        }
+
+        const userObj = new User({
+            username: username,
+            password: crypto.createHash("sha256").update(password).digest("hex")
+        });
+
+        userObj.save().catch((err) => { 
+            console.log("Failed to register user '" + username + "', error : " + err); 
+        });
+
+        let token = createJWT(userObj);
         res.cookie("accessToken", token, { httpOnly: true });
         res.redirect("/");
-    } */
-    res.redirect("/");
+        
+    })
+    .catch((err) => {
+            console.log("Failed to retreive user '" + username + "', error : " + err); 
+            res.render("account/signup");
+            return;
+    });
 }
 
-export function signin(req, res) {
-    /*
+export async function signin(req, res) {
     let { username, password } = req.body;
-    let user = forum.users.find((user) => user.username == username);
-    if (user && user.password == createHash("sha256").update(password).digest("hex")) {
-        let token = createJWT(user);
-        res.cookie("accessToken", token, { httpOnly: true });
-        res.redirect("/");
-    } else {
-        res.render("account/signin", { message: "Try again. Username or password incorrect." });
-    }
-    */
-    res.redirect("/");
+
+    await User.findOne({username: username})
+    .then((user) => {
+
+        if(user){
+            if(crypto.createHash("sha256").update(password).digest("hex") == user.password){
+                let token = createJWT(user);
+                res.cookie("accessToken", token, { httpOnly: true });
+                res.redirect("/");
+                return;
+            }
+        }
+
+        res.render("account/signin", { message: "<p>Username or password incorrect.</p>"});
+        
+    })
+    .catch((err) => {
+            console.log("Failed to retreive user '" + username + "', error : " + err); 
+            res.render("account/signin");
+            return;
+    });
 }
 
 export function signoff(req, res) {

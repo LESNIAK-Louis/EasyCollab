@@ -6,10 +6,20 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import * as routes from "./routes.js";
+import * as db from "./db/db.js"
 
 dotenv.config();
+dotenv.config({ path: `.env.local`, override: true });
+
 export const app = express();
 const publicPath = fileURLToPath(new URL("./public", import.meta.url));
+
+db.connectDB()
+            .then(() => { console.log("Connection to database succeeded."); })
+            .catch((error) => { 
+                console.log("Connection to database failed : " + error); 
+                process.exit();
+            });
 
 app
     .use(morgan("dev"))
@@ -31,7 +41,7 @@ app
     .get("/", routes.index)
     .get("/account/signin", routes.getSigninPage)
     .get("/account/signup", routes.getSignupPage)
-    .get("/account/signoff", routes.getSignoffPage)
+    .get("/account/signoff", routes.logoff)
     // POST
     .post("/", routes.index)
     .post("/account/signin", routes.login)

@@ -8,8 +8,6 @@ export function getSigninPage(req, res) { res.render("account/signin"); }
 
 export function login(req, res) { signin(req,res); }
 
-export function getSignoffPage(req, res) {res.render("account/signoff"); }
-
 export function logoff(req, res) { signoff(req,res); }
 
 export function getSignupPage(req, res) {res.render("account/signup"); }
