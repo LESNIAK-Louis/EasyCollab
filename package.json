@@ -1,0 +1,24 @@
+{
+    "name": "EasyCollab",
+    "version": "0.0.1",
+    "description": "Tableur collaboratif.",
+    "homepage": "somewhere.that.i.used.to.know.com",
+    "licence": "MIT",
+    "author": "Louis LESNIAK",
+    "type": "module",
+    "dependencies": {
+        "express":"*",
+        "morgan":"*",
+        "nodemon":"*",
+        "ejs":"*",
+        "jsonwebtoken": "*",
+        "dotenv": "*",
+        "cookie-parser": "*",
+        "mongoose": "*",
+        "method-override": "*"
+    },
+    "main": "src/server.js",
+    "scripts": { 
+        "start": "nodemon src/server.js"
+     }
+}
