@@ -21,6 +21,11 @@
                 </tbody>
             </table>
         <% } %>
+        <ul>
+            <% for(user of users) { %>
+                <li><%= user.username %></li>
+            <% } %>
+        </ul>
         <h1>Hello</h1>
     </body>
 </html>

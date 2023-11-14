@@ -7,19 +7,19 @@
     "author": "Louis LESNIAK",
     "type": "module",
     "dependencies": {
-        "express":"*",
-        "morgan":"*",
-        "nodemon":"*",
-        "ejs":"*",
-        "jsonwebtoken": "*",
-        "dotenv": "*",
         "cookie-parser": "*",
-        "mongoose": "*",
+        "dotenv": "*",
+        "ejs": "*",
+        "express": "*",
+        "http": "*",
+        "jsonwebtoken": "*",
         "method-override": "*",
-        "createHash": "*"
+        "mongoose": "*",
+        "morgan": "*",
+        "nodemon": "*"
     },
     "main": "src/server.js",
-    "scripts": { 
-        "start": "nodemon src/server.js",
-     }
+    "scripts": {
+        "start": "nodemon src/server.js"
+    }
 }
