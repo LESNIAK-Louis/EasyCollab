@@ -9,12 +9,12 @@ dotenv.config();
 export async function signup(req, res) {
     let { username, password } = req.body;
 
-    let user = spreadsheet.getUser(username);
+    let user = spreadsheet.users[username];
     if(user){
         res.render("account/signup", { message: "<p>Ce nom n'est pas disponible.</p>" });
     }else{
         user = new User(username, crypto.createHash("sha256").update(password).digest("hex"));
-        spreadsheet.addUser(user);
+        spreadsheet.users[username] = user;
         spreadsheet.save();
         let token = createJWT(user);
         res.cookie("accessToken", token, { httpOnly: true });
@@ -25,7 +25,7 @@ export async function signup(req, res) {
 export async function signin(req, res) {
     let { username, password } = req.body;
 
-    let user = spreadsheet.getUser(username);
+    let user = spreadsheet.users[username];
     if(user && crypto.createHash("sha256").update(password).digest("hex") == user.password){
         let token = createJWT(user);
         res.cookie("accessToken", token, { httpOnly: true });

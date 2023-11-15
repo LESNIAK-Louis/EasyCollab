@@ -13,14 +13,6 @@ export default class SpreadSheet{
         return ++this.currentId;
     }
 
-    getUser(username){
-        return this.users[username];
-    }
-
-    addUser(user){
-        this.users[user.username] = user;
-    }
-
     async save(){
         let json = JSON.stringify(this);
         await writeFile("./data/spreadsheet.json", json).then(
@@ -35,18 +27,6 @@ export default class SpreadSheet{
             .then((text) => {
                 let spreadsheet = JSON.parse(text);
                 this.currentId = spreadsheet.currentId;
-                
-                for(var [name, user] of Object.entries(spreadsheet.users)){
-                    
-                    let userObj = new User(user.username, user.password);
-                    for(var [id,sheet] of Object.entries(user.ownedSheets)){
-
-                        let sheetObj = new Sheet(id, sheet.name);
-                        sheetObj.setData(sheet.data);
-                        userObj.addSheet(sheetObj);
-                    }
-                    this.addUser(userObj);
-                }
                 this.users = spreadsheet.users;
             })
             .catch((error) => console.log(`Erreur en lecture : ${error.message}.`)

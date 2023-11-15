@@ -7,13 +7,4 @@ export default class User{
 
         this.ownedSheets = {};
     }
-
-    addSheet(sheet){
-
-        this.ownedSheets[sheet.id] = sheet;
-    }
-
-    getSheet(id){
-        return this.ownedSheets[id];
-    }
 }

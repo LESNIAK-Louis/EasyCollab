@@ -9,16 +9,12 @@ export default class Sheet{
         this.name = name;
         this.data = new Array();
     }
-
-    setData(data){
-        this.data = data;
-    }
 }
 
 export async function createSheet(req, res){
 
     let { sheetName } = req.body;
-    let user = spreadsheet.getUser(res.locals.user.username);
+    let user = spreadsheet.users[res.locals.user.username];
     
     if(user){
         let sheet = new Sheet(spreadsheet.getNewId(), sheetName);
