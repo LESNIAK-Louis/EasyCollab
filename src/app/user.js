@@ -4,6 +4,16 @@ export default class User{
 
         this.username = username;
         this.password = password;
-        this.dateRegistration = Date.now;
+
+        this.ownedSheets = {};
+    }
+
+    addSheet(sheet){
+
+        this.ownedSheets[sheet.id] = sheet;
+    }
+
+    getSheet(id){
+        return this.ownedSheets[id];
     }
 }

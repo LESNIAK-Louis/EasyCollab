@@ -11,6 +11,16 @@
             <div>
                 <a href="/account/signoff" class="button">Sign out</a>
             </div>
+            <div>
+                <a href="/sheet/new" class="button">Créer un document</a>
+            </div>
+            <ul>
+                <% if(users[locals.user.username]) { %>
+                    <% for([id, sheet] of Object.entries(users[locals.user.username].ownedSheets)) { %>
+                        <li><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></li>
+                    <% } %>
+                <% } %>
+            </ul>
         <% } else { %>
             <table>
                 <tbody>
@@ -21,11 +31,7 @@
                 </tbody>
             </table>
         <% } %>
-        <ul>
-            <% for(user of users) { %>
-                <li><%= user.username %></li>
-            <% } %>
-        </ul>
+        
         <h1>Hello</h1>
     </body>
 </html>

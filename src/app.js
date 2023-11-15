@@ -34,11 +34,14 @@ app
     .get("/account/signin", routes.getSigninPage)
     .get("/account/signup", routes.getSignupPage)
     .get("/account/signoff", routes.logoff)
+    .get("/sheet/new", routes.getCreateSheetPage)
+    .get("/sheet/:sheetId", routes.showSheet)
     // POST
     .post("/", routes.index)
     .post("/account/signin", routes.login)
     .post("/account/signup", routes.register)
     .post("/account/signoff", routes.logoff)
+    .post("/sheet/new", routes.newSheet)
     // 
     .use((req, res, next) => next(createError(404)))
     .use((err, req, res, next) => res.send(`<h1>${err.message}</h1>`));
