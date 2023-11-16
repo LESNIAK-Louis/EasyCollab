@@ -1,0 +1,21 @@
+@startuml
+
+class EasyCollab{
+
+}
+
+class User{
+username : string
+password : string
+}
+
+class Sheet{
+id : number
+name : string
+data : dict<[number,number], string>
+}
+
+EasyCollab -"*" User
+User -"*" Sheet
+
+@enduml
