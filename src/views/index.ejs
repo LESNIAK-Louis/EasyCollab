@@ -15,18 +15,26 @@
             <div>
                 <a href="/sheet/new" class="button">Créer un document</a>
             </div>
-            <ul>
+            <table>
                 <% if(users[locals.user.username]) { %>
                     <% if(Object.keys(users[locals.user.username].ownedSheets).length > 0) { %>
                         <p> Ouvrir un document : </p>
                         <% for([id, sheet] of Object.entries(users[locals.user.username].ownedSheets)) { %>
-                            <li><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></li>
+                            <tr>
+                                <td><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></td>
+                                <td>
+                                    <form method="POST" action="/sheet/<%= id %>?_method=DELETE">
+                                        <input type="hidden" name="name" value="value" /> 
+                                        <a class="button" onclick="this.parentNode.submit();">Supprimer</a>
+                                    </form>
+                                </td>
+                            </tr>  
                         <% } %>
                     <% } else {%>
                         <p> Aucun document. </p>
                     <% } %>
                 <% } %>
-            </ul>
+            </table>
         <% } else { %>
             <table>
                 <tbody>

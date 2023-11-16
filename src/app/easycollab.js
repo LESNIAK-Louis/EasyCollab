@@ -2,7 +2,7 @@ import { writeFile, readFile } from "fs/promises"
 import User from "./user.js"
 import Sheet from "./sheet.js"
 
-export default class SpreadSheet{
+export default class EasyCollab{
 
     constructor(){
         this.currentId = 0;

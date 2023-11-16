@@ -1,5 +1,4 @@
-import { spreadsheet } from "../routes.js"
-import User from "./user.js"
+import { easycollab } from "../routes.js"
 
 export default class Sheet{
 
@@ -14,12 +13,12 @@ export default class Sheet{
 export async function createSheet(req, res){
 
     let { sheetName } = req.body;
-    let user = spreadsheet.users[res.locals.user.username];
+    let user = easycollab.users[res.locals.user.username];
     
     if(user){
-        let sheet = new Sheet(spreadsheet.getNewId(), sheetName);
+        let sheet = new Sheet(easycollab.getNewId(), sheetName);
         user.ownedSheets[sheet.id] = sheet;
-        spreadsheet.save();
+        easycollab.save();
         res.redirect("/sheet/" + sheet.id);
     }
 }
@@ -27,9 +26,16 @@ export async function createSheet(req, res){
 export async function editData(req, res){
     
     let { id, sheetName, data } = req.body;
-    let sheet = spreadsheet.users[res.locals.user.username].ownedSheets[id];
+    let sheet = easycollab.users[res.locals.user.username].ownedSheets[id];
     sheet.name = sheetName;
     sheet.data = data;
-    spreadsheet.save();
+    easycollab.save();
     res.redirect("/sheet/" + id);
+}
+
+export async function remove(req, res){
+
+    delete easycollab.users[res.locals.user.username].ownedSheets[req.params.sheetId];
+    easycollab.save();
+    res.redirect("/");
 }

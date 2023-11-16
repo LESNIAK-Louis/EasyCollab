@@ -44,6 +44,8 @@ app
     .post("/sheet/new", routes.newSheet)
     // PUT
     .put("/sheet/:sheetId", routes.editSheet)
+    // DELETE
+    .delete("/sheet/:sheetId", routes.removeSheet)
     //
     .use((req, res, next) => next(createError(404)))
     .use((err, req, res, next) => res.send(`<h1>${err.message}</h1>`));

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "./user.js"
-import { spreadsheet } from "../routes.js"
+import { easycollab } from "../routes.js"
 import * as crypto from "crypto"
 import dotenv from "dotenv";
 
@@ -9,13 +9,13 @@ dotenv.config();
 export async function signup(req, res) {
     let { username, password } = req.body;
 
-    let user = spreadsheet.users[username];
+    let user = easycollab.users[username];
     if(user){
         res.render("account/signup", { message: "<p>Ce nom n'est pas disponible.</p>" });
     }else{
         user = new User(username, crypto.createHash("sha256").update(password).digest("hex"));
-        spreadsheet.users[username] = user;
-        spreadsheet.save();
+        easycollab.users[username] = user;
+        easycollab.save();
         let token = createJWT(user);
         res.cookie("accessToken", token, { httpOnly: true });
         res.redirect("/");
@@ -25,7 +25,7 @@ export async function signup(req, res) {
 export async function signin(req, res) {
     let { username, password } = req.body;
 
-    let user = spreadsheet.users[username];
+    let user = easycollab.users[username];
     if(user && crypto.createHash("sha256").update(password).digest("hex") == user.password){
         let token = createJWT(user);
         res.cookie("accessToken", token, { httpOnly: true });
