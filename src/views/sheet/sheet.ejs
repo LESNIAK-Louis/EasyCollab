@@ -6,9 +6,10 @@
         <title><%= name %></title>
     </head>
     <body>
-        <input type="text" name="sheetNameInput" size="40" value="<%= name %>"/>
-        <input type="button" name="saveButton" value="Enregistrer"/>
-        <table>
+        <a href="/" class="button">Accueil</a>
+        <input type="text" id="sheetNameInput" size="40" value="<%= name %>"/>
+        <input type="button" id="saveButton" value="Enregistrer les modifications"/>
+        <table id="sheetTable">
             <thead>
                 <tr>
                     <th></th>
@@ -23,12 +24,49 @@
                         <th><%= i %></th>
                         <% for(var j = 1; j < 11; j++) {%>
                             <td>
-                                <input type="text" id="cell" name="<%= i %>_<%= j %>" size="10" />
+                                <input type="text" class="cell" id="cell" size="10" value="<%= data[[i,j]] %>"/>
                             </td>
                         <% }%>
                     </tr>
                 <% }%>
             </tbody>
         </table>
+
+        <script type="text/javascript">
+            var saveButton = document.getElementById("saveButton");
+
+            saveButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                buildSheetData();
+            });
+
+            async function buildSheetData() {
+                let table = document.getElementById("sheetTable");
+                let data = {};
+                
+                for(let row of table.rows){
+                    for(let cell of row.cells){
+                        let input = cell.firstElementChild;
+                        if(input && input.value){
+                            data[[row.rowIndex, cell.cellIndex]] = input.value;
+                        }
+                    }
+                }
+                
+                let obj = {
+                    id: "<%= id %>",
+                    sheetName: document.getElementById("sheetNameInput").value,
+                    data: data
+                }
+                let params = {
+                    method: "PUT",
+                    headers: { Accept: "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify(obj),
+                };
+                fetch("http://localhost:3000/sheet/<%= id %>?_method=PUT", params)
+                    .then((response) => alert("save"))
+                    .then(console.log);
+            }
+        </script>
     </body>
 </html>

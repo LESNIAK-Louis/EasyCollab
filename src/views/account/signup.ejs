@@ -7,28 +7,29 @@
         <script src="/javascripts/hash.js"></script>
     </head>
     <body>
+        <a href="/" class="button">Accueil</a>
         <% if (locals.message)  %>
         <%- locals.message %>
         <form name="signupForm" action="/account/signup" method="POST">
             <table>
                 <tbody>
                     <tr>
-                        <td><label for="username">Enter username :</label></td>
+                        <td><label for="username">Nom d'utilisateur :</label></td>
                         <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
                     </tr>
                     <tr>
-                        <td><label for="password">Enter password :</label></td>
+                        <td><label for="password">Mot de passe :</label></td>
                         <td><input type="password" name="password" value="" /></td>
                         <td><label id="passwordMessage"></label></td>
                     </tr>
                     <tr>
-                        <td><label for="passwordRepeated">Confirm your password :</label></td>
+                        <td><label for="passwordRepeated">Confirmer le mot de passe :</label></td>
                         <td><input type="password" id="passwordRepeated" value=""/></td>
                         <td><label id="passwordRepeatedMessage"></label></td>
                     </tr>
                 </tbody>
             </table>
-            <div><input type="submit" value="Sign up"/></div>
+            <div><input type="submit" value="Créer un compte"/></div>
         </form>
 
         <script type="text/javascript">
@@ -46,10 +47,10 @@
                 passwordMessage.textContent = "";
                 passwordRepeatedMessage.textContent = "";
                 if (accountForm.password.value.length < 8) {
-                    passwordMessage.textContent = "Password must be at least 8 characters.";
+                    passwordMessage.textContent = "Le mot de passe doit compter au moins 8 caractères.";
                 } 
                 else if (accountForm.password.value != passwordRepeated.value) {
-                    passwordRepeatedMessage.textContent = "Passwords are not corresponding";
+                    passwordRepeatedMessage.textContent = "Les mots de passe ne correspondent pas.";
                 } 
                 else {
                     let rawValue = accountForm.password.value;

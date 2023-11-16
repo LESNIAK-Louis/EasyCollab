@@ -1,5 +1,5 @@
 import { authenticate, signin, signoff, signup } from "./app/account.js";
-import { createSheet } from "./app/sheet.js";
+import { createSheet, editData } from "./app/sheet.js";
 import SpreadSheet from "./app/spreadsheet.js";
 import Sheet from "./app/sheet.js";
 
@@ -28,4 +28,6 @@ export function showSheet(req, res) {
     res.render("sheet/sheet", 
                 spreadsheet.users[res.locals.user.username].ownedSheets[req.params.sheetId]); 
 }
+
+export function editSheet(req, res) { editData(req, res); }
 

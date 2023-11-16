@@ -7,7 +7,7 @@ export default class Sheet{
 
         this.id = id;
         this.name = name;
-        this.data = new Array();
+        this.data = {};
     }
 }
 
@@ -22,4 +22,14 @@ export async function createSheet(req, res){
         spreadsheet.save();
         res.redirect("/sheet/" + sheet.id);
     }
+}
+
+export async function editData(req, res){
+    
+    let { id, sheetName, data } = req.body;
+    let sheet = spreadsheet.users[res.locals.user.username].ownedSheets[id];
+    sheet.name = sheetName;
+    sheet.data = data;
+    spreadsheet.save();
+    res.redirect("/sheet/" + id);
 }

@@ -3,21 +3,27 @@
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title>Index</title>
+        <title>Easy Collab</title>
     </head>
     <body>
+        <h1>Easy Collab</h1>
         <% if (locals.user) { %>
             <p>Bienvenue utilisateur : <%= locals.user.username %></p>
             <div>
-                <a href="/account/signoff" class="button">Sign out</a>
+                <a href="/account/signoff" class="button">Se déconnecter</a>
             </div>
             <div>
                 <a href="/sheet/new" class="button">Créer un document</a>
             </div>
             <ul>
                 <% if(users[locals.user.username]) { %>
-                    <% for([id, sheet] of Object.entries(users[locals.user.username].ownedSheets)) { %>
-                        <li><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></li>
+                    <% if(Object.keys(users[locals.user.username].ownedSheets).length > 0) { %>
+                        <p> Ouvrir un document : </p>
+                        <% for([id, sheet] of Object.entries(users[locals.user.username].ownedSheets)) { %>
+                            <li><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></li>
+                        <% } %>
+                    <% } else {%>
+                        <p> Aucun document. </p>
                     <% } %>
                 <% } %>
             </ul>
@@ -25,13 +31,13 @@
             <table>
                 <tbody>
                 <tr>
-                    <td><a href="/account/signin" class="button">Sign in</a></td>
-                    <td><a href="/account/signup" class="button">Sign up</a></td>
+                    <td><a href="/account/signin" class="button">Se connecter</a></td>
+                    <td><a href="/account/signup" class="button">Créer un compte</a></td>
                 </tr>
                 </tbody>
             </table>
         <% } %>
         
-        <h1>Hello</h1>
+        
     </body>
 </html>

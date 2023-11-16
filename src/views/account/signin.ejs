@@ -7,23 +7,24 @@
         <script src="/javascripts/hash.js"></script>
     </head>
     <body>
+        <a href="/" class="button">Accueil</a>
         <% if (locals.message)  %>
         <%- locals.message %>
         <form name="signinForm" action="/account/signin" method="POST">
             <table>
                 <tbody>
                     <tr>
-                        <td><label for="username">Enter username :</label></td>
+                        <td><label for="username">Nom d'utilisateur :</label></td>
                         <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
                     </tr>
                     <tr>
-                        <td><label for="password">Enter password :</label></td>
+                        <td><label for="password">Mot de passe :</label></td>
                         <td><input type="password" name="password" value="" /></td>
                         <td><label id="passwordMessage"></label></td>
                     </tr>
                 </tbody>
             </table>
-            <div><input type="submit" value="Sign in"/></div>
+            <div><input type="submit" value="Se connecter"/></div>
         </form>
 
         <script>
@@ -36,15 +37,12 @@
                 let passwordMessage = document.getElementById("passwordMessage");
                 let passwordRepeated = document.getElementById("passwordRepeated");
                 passwordMessage.textContent = "";
-                if (signinForm.password.value.length < 8) {
-                    passwordMessage.textContent = "Password must be at least 8 characters.";
-                } 
-                else {
-                    let rawValue = signinForm.password.value;
-                    signinForm.password.value = await hashSHA256(rawValue);
-                    signinForm.submit();
-                    signinForm.password.value = rawValue;
-                }
+
+                let rawValue = signinForm.password.value;
+                signinForm.password.value = await hashSHA256(rawValue);
+                signinForm.submit();
+                signinForm.password.value = rawValue;
+                
             }
         </script>
 

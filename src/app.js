@@ -42,6 +42,8 @@ app
     .post("/account/signup", routes.register)
     .post("/account/signoff", routes.logoff)
     .post("/sheet/new", routes.newSheet)
-    // 
+    // PUT
+    .put("/sheet/:sheetId", routes.editSheet)
+    //
     .use((req, res, next) => next(createError(404)))
     .use((err, req, res, next) => res.send(`<h1>${err.message}</h1>`));
