@@ -43,7 +43,8 @@ app
     .post("/account/signoff", routes.logoff)
     .post("/sheet/new", routes.newSheet)
     // PUT
-    .put("/sheet/:sheetId", routes.editSheet)
+    .put("/sheet/:sheetId/:cellId", routes.editSheet)
+    .put("/sheet/:sheetId", routes.editSheetUsers)
     // DELETE
     .delete("/sheet/:sheetId", routes.removeSheet)
     //

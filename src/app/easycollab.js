@@ -7,6 +7,7 @@ export default class EasyCollab{
     constructor(){
         this.currentId = 0;
         this.users = {};
+        this.sheets = {};
     }
 
     getNewId(){
@@ -28,6 +29,7 @@ export default class EasyCollab{
                 let spreadsheet = JSON.parse(text);
                 this.currentId = spreadsheet.currentId;
                 this.users = spreadsheet.users;
+                this.sheets = spreadsheet.sheets;
             })
             .catch((error) => console.log(`Erreur en lecture : ${error.message}.`)
         );

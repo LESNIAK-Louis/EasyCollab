@@ -5,6 +5,7 @@ export default class User{
         this.username = username;
         this.password = password;
 
-        this.ownedSheets = {};
+        this.ownedSheets = [];
+        this.sharedSheets = [];
     }
 }

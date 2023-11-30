@@ -4,6 +4,77 @@
         <meta charset="utf-8" />
         <link rel="stylesheet" href="/stylesheets/index.css" />
         <title>Easy Collab</title>
+
+        <script>
+            async function deleteSheet(id) {
+                try {
+                    const response = await fetch("/sheet/"+id, {
+                    method: "DELETE",
+                    });
+    
+                    if(response.ok){
+                        div = document.getElementById("ownedSheet"+id);
+                        div.remove();
+                    } else {
+                        throw response.status;
+                    }
+                    
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+
+            async function deleteUser(id, name, isAddition) {
+                try {
+                    let obj = {
+                        id: id,
+                        username: name,
+                        isAddition: isAddition
+                    }
+
+                    const response = await fetch("/sheet/"+id, {
+                        method: "PUT",
+                        headers: { Accept: "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify(obj),
+                    });
+    
+                    if(response.ok){
+                        console.log("OK")
+                    } else {
+                        throw response.status;
+                    }
+                    
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+
+            async function addUser(id, isAddition) {
+                try {
+                    let obj = {
+                        id: id,
+                        username: document.getElementById("inputParticipant" + id).value,
+                        isAddition: isAddition
+                    }
+
+                    const response = await fetch("/sheet/"+id, {
+                        method: "PUT",
+                        headers: { Accept: "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify(obj),
+                    });
+    
+                    if(response.ok){
+                        console.log("OK")
+                    } else {
+                        throw response.status;
+                    }
+                    
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+        </script>
+
     </head>
     <body>
         <h1>Easy Collab</h1>
@@ -15,26 +86,64 @@
             <div>
                 <a href="/sheet/new" class="button">Créer un document</a>
             </div>
-            <table>
-                <% if(users[locals.user.username]) { %>
-                    <% if(Object.keys(users[locals.user.username].ownedSheets).length > 0) { %>
-                        <p> Ouvrir un document : </p>
-                        <% for([id, sheet] of Object.entries(users[locals.user.username].ownedSheets)) { %>
-                            <tr>
-                                <td><a href="/sheet/<%= id %>" class="button"><%= sheet.name %></a></td>
-                                <td>
-                                    <form method="POST" action="/sheet/<%= id %>?_method=DELETE">
-                                        <input type="hidden" name="name" value="value" /> 
-                                        <a class="button" onclick="this.parentNode.submit();">Supprimer</a>
-                                    </form>
-                                </td>
-                            </tr>  
+            
+            <% if(users[locals.user.username]) { %>
+
+                <h1>Owned Sheets</h1>
+
+                <div id="ownedSheets" >
+                    <% if(users[locals.user.username].ownedSheets.length > 0) { %>
+
+                        <% for(sheetId of users[locals.user.username].ownedSheets) { %>
+
+                            <div id="ownedSheet<%= sheetId %>">
+                                <td>Détenteur : <a href="/sheet/<%= sheetId %>" class="button"><%= sheets[sheetId].name %></a></td>
+                                <td><button onclick="deleteSheet(<%= sheetId %>);">Supprimer</button></td>
+                                <p>Participants :</p>
+                                
+                                <div class="autocomplete">
+                                    <input type="text" id="inputParticipant<%= sheetId %>">
+                                    <button id="ajouterParticipant<%= sheetId %>" onclick="addUser(<%= sheetId %>, true);">+</button>
+                                </div>
+                                
+                                
+                                <% if(sheets[sheetId].users.length > 0) { %>
+                                </br>
+                                    <% for(username of sheets[sheetId].users) { %>
+                                        <div>
+                                            <td><%= username %></td>
+                                            <td><button id="retirerParticipant<%= sheetId %>" onclick="deleteUser(<%= sheetId %>, '<%= username %>', false);">-</button></td>
+                                        </div>
+                                    <% } %>
+            
+                                <% } %>
+
+                            </div>
+
                         <% } %>
-                    <% } else {%>
-                        <p> Aucun document. </p>
+
                     <% } %>
-                <% } %>
-            </table>
+                </div>
+
+                <h1>Shared Sheets</h1>
+                
+                <div id="sharedSheets">
+                    <% if(users[locals.user.username].sharedSheets.length > 0) { %>
+                        <% for(sheetId of users[locals.user.username].sharedSheets) { %>
+                            <div id="sharedSheet<%= sheetId %>">
+                                <td><a href="/sheet/<%= sheetId %>" class="button"><%= sheets[sheetId].name %></a></td>
+                                <p>Détenteur : <%= sheets[sheetId].owner %></p>
+                                <p>Participants :</p>
+                                <% for(user of sheets[sheetId].users) { %>
+                                    <p><%= user %></p>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            <% } %>
+            
         <% } else { %>
             <table>
                 <tbody>

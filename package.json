@@ -18,8 +18,11 @@
         "morgan": "*",
         "nodemon": "*"
     },
+    "nodemonConfig": {
+        "ignore": ["data/*.json"]
+    },
     "main": "src/server.js",
     "scripts": {
-        "start": "node src/server.js"
+        "start": "nodemon src/server.js"
     }
 }

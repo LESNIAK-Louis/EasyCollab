@@ -13,8 +13,8 @@
             <thead>
                 <tr>
                     <th></th>
-                    <% for(var i = 1; i < 11; i++) {%>
-                        <th><%= i %></th>
+                    <% for(var i = 65; i < 65+26; i++) {%>
+                        <th>&#<%= i %></th>
                     <% }%>
                 </tr>
             </thead>
@@ -22,7 +22,7 @@
                 <% for(var i = 1; i < 11; i++) {%>
                     <tr>
                         <th><%= i %></th>
-                        <% for(var j = 1; j < 11; j++) {%>
+                        <% for(var j = 1; j < 27; j++) {%>
                             <td>
                                 <input type="text" class="cell" id="cell" size="10" value="<%= data[[i,j]] %>"/>
                             </td>
