@@ -9,11 +9,11 @@
             async function deleteSheet(id) {
                 try {
                     const response = await fetch("/sheet/"+id, {
-                    method: "DELETE",
+                    method: "DELETE"
                     });
     
                     if(response.ok){
-                        div = document.getElementById("ownedSheet"+id);
+                        let div = document.getElementById("ownedSheet"+id);
                         div.remove();
                     } else {
                         throw response.status;
@@ -21,6 +21,35 @@
                     
                 } catch (error) {
                     console.error("Error:", error);
+                }
+            }
+
+            async function renameSheet(id) {
+
+                let name = document.getElementById("sheet" + id + "Name");
+
+                let rename = prompt("Nouveau nom :", name.innerText);
+
+                if(rename != null){
+                    try {
+                        const response = await fetch("/sheet/rename/"+id, {
+                        method: "PUT",
+                        headers: { Accept: "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify({ 
+                            id: id,
+                            name: rename
+                        }) 
+                        });
+        
+                        if(response.ok){
+                            name.textContent = rename;
+                        } else {
+                            throw response.status;
+                        }
+                        
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
                 }
             }
 
@@ -32,16 +61,15 @@
                         isAddition: isAddition
                     }
 
-                    const response = await fetch("/sheet/"+id, {
+                    const response = await fetch("/sheet/users/"+id, {
                         method: "PUT",
                         headers: { Accept: "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify(obj),
                     });
     
                     if(response.ok){
-                        console.log("OK")
-                    } else {
-                        throw response.status;
+                        let div = document.getElementById("participant"+ name +"sheet" + id);
+                        div.remove();
                     }
                     
                 } catch (error) {
@@ -51,22 +79,53 @@
 
             async function addUser(id, isAddition) {
                 try {
+                    let username = document.getElementById("inputParticipant" + id).value;
+
                     let obj = {
                         id: id,
-                        username: document.getElementById("inputParticipant" + id).value,
+                        username: username,
                         isAddition: isAddition
                     }
 
-                    const response = await fetch("/sheet/"+id, {
+                    const response = await fetch("/sheet/users/"+id, {
                         method: "PUT",
                         headers: { Accept: "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify(obj),
                     });
+
+                    let error = document.getElementById("sheet" + id + "Error");
     
                     if(response.ok){
-                        console.log("OK")
+                        
+                        var divToAdd = document.createElement('div');
+                        let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
+                            + '' + username + ''
+                            + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'                     
+                            + '</div>';
+                        divToAdd.innerHTML = contentDiv;
+
+                        let div = document.getElementById("participantsSheet" + id);
+
+                        div.appendChild(divToAdd);
+
+                        error.textContent = "";
+
                     } else {
-                        throw response.status;
+
+                        switch(response.status){
+                            case 400:
+                                error.textContent = "Utilisateur introuvable";
+                                break;
+                            case 409:
+                                error.textContent = "Utilisateur déjà ajouté";
+                                break;
+                            case 406:
+                                error.textContent = "Vous ne pouvez vous ajouter vous même";
+                                break;
+                            default:
+                                error.textContent = "";
+                                break;
+                        }
                     }
                     
                 } catch (error) {
@@ -97,26 +156,29 @@
                         <% for(sheetId of users[locals.user.username].ownedSheets) { %>
 
                             <div id="ownedSheet<%= sheetId %>">
-                                <td>Détenteur : <a href="/sheet/<%= sheetId %>" class="button"><%= sheets[sheetId].name %></a></td>
-                                <td><button onclick="deleteSheet(<%= sheetId %>);">Supprimer</button></td>
+                                <a href="/sheet/<%= sheetId %>" id="sheet<%= sheetId %>Name" class="button"><%= sheets[sheetId].name %></a>
+                                <button onclick="deleteSheet(<%= sheetId %>);">Supprimer</button>
+                                <button onclick="renameSheet(<%= sheetId %>);">Renommner</button>
                                 <p>Participants :</p>
                                 
                                 <div class="autocomplete">
                                     <input type="text" id="inputParticipant<%= sheetId %>">
                                     <button id="ajouterParticipant<%= sheetId %>" onclick="addUser(<%= sheetId %>, true);">+</button>
+                                    <p id ="sheet<%= sheetId %>Error"></p>
                                 </div>
                                 
-                                
-                                <% if(sheets[sheetId].users.length > 0) { %>
-                                </br>
-                                    <% for(username of sheets[sheetId].users) { %>
-                                        <div>
-                                            <td><%= username %></td>
-                                            <td><button id="retirerParticipant<%= sheetId %>" onclick="deleteUser(<%= sheetId %>, '<%= username %>', false);">-</button></td>
-                                        </div>
+                                <div id="participantsSheet<%= sheetId %>">
+                                    <% if(sheets[sheetId].users.length > 0) { %>
+        
+                                        <% for(username of sheets[sheetId].users) { %>
+                                            <div id="participant<%= username %>sheet<%= sheetId %>">
+                                                <%= username %>
+                                                <button id="retirerParticipant<%= sheetId %>" onclick="deleteUser(<%= sheetId %>, '<%= username %>', false);">-</button>
+                                            </div>
+                                        <% } %>
+                
                                     <% } %>
-            
-                                <% } %>
+                                </div>
 
                             </div>
 
@@ -131,7 +193,7 @@
                     <% if(users[locals.user.username].sharedSheets.length > 0) { %>
                         <% for(sheetId of users[locals.user.username].sharedSheets) { %>
                             <div id="sharedSheet<%= sheetId %>">
-                                <td><a href="/sheet/<%= sheetId %>" class="button"><%= sheets[sheetId].name %></a></td>
+                                <a href="/sheet/<%= sheetId %>" class="button"><%= sheets[sheetId].name %></a>
                                 <p>Détenteur : <%= sheets[sheetId].owner %></p>
                                 <p>Participants :</p>
                                 <% for(user of sheets[sheetId].users) { %>

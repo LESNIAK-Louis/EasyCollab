@@ -1,5 +1,5 @@
 import { authenticate, signin, signoff, signup } from "./app/account.js";
-import { createSheet, editData, remove, renderSheet, editUsers } from "./app/sheet.js";
+import { createSheet, editData, remove, renderSheet, editUsers, renameSheet } from "./app/sheet.js";
 import EasyCollab from "./app/easycollab.js";
 
 export let easycollab = new EasyCollab();
@@ -28,6 +28,8 @@ export function showSheet(req, res) { renderSheet(req,res); }
 export function editSheet(req, res) { editData(req, res); }
 
 export function editSheetUsers(req, res) { editUsers(req, res); }
+
+export function editSheetName(req, res) { renameSheet(req, res); }
 
 export function removeSheet(req, res) { remove(req, res); }
 

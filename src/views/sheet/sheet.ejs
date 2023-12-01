@@ -7,8 +7,6 @@
     </head>
     <body>
         <a href="/" class="button">Accueil</a>
-        <input type="text" id="sheetNameInput" size="40" value="<%= name %>"/>
-        <input type="button" id="saveButton" value="Enregistrer les modifications"/>
         <table id="sheetTable">
             <thead>
                 <tr>
@@ -24,49 +22,52 @@
                         <th><%= i %></th>
                         <% for(var j = 1; j < 27; j++) {%>
                             <td>
-                                <input type="text" class="cell" id="cell" size="10" value="<%= data[[i,j]] %>"/>
+                                <input type="text" class="cell" id="cell<%= i %>_<%= j %>" size="10" value="<%= data[[i,j]] %>"/>
                             </td>
                         <% }%>
                     </tr>
                 <% }%>
             </tbody>
         </table>
+    </body>
 
-        <script type="text/javascript">
-            var saveButton = document.getElementById("saveButton");
+    <script type="text/javascript">
 
-            saveButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                buildSheetData();
-            });
+        for (let i = 1; i < 11; i++) {
+            for(let j = 1; j < 27; j++){
+                let cellIJ = document.getElementById("cell"+i+"_"+j);
+                cellIJ.addEventListener("keyup", (e) => {
+                    sendCell(i, j, cellIJ.value);
+                });
+            }
+        }
 
-            async function buildSheetData() {
-                let table = document.getElementById("sheetTable");
-                let data = {};
-                
-                for(let row of table.rows){
-                    for(let cell of row.cells){
-                        let input = cell.firstElementChild;
-                        if(input && input.value){
-                            data[[row.rowIndex, cell.cellIndex]] = input.value;
-                        }
-                    }
-                }
-                
+
+        async function sendCell(i, j, value) {
+
+        try {
                 let obj = {
                     id: "<%= id %>",
-                    sheetName: document.getElementById("sheetNameInput").value,
-                    data: data
+                    si: i,
+                    sj: j,
+                    cellValue: value
                 }
-                let params = {
+
+                const response = await fetch("/sheet/<%= id %>", {
                     method: "PUT",
                     headers: { Accept: "application/json", "Content-Type": "application/json" },
                     body: JSON.stringify(obj),
-                };
-                fetch("http://localhost:3000/sheet/<%= id %>?_method=PUT", params)
-                    .then((response) => alert("save"))
-                    .then(console.log);
+                });
+        
+                if(response.ok){   
+                } else {
+                    throw response.status;
+                }
+                        
+            } catch (error) {
+                console.error("Error:", error);
             }
-        </script>
-    </body>
+        }
+    </script>
+
 </html>
