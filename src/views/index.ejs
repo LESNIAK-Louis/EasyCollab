@@ -36,7 +36,6 @@
                         method: "PUT",
                         headers: { Accept: "application/json", "Content-Type": "application/json" },
                         body: JSON.stringify({ 
-                            id: id,
                             name: rename
                         }) 
                         });
@@ -56,7 +55,6 @@
             async function deleteUser(id, name, isAddition) {
                 try {
                     let obj = {
-                        id: id,
                         username: name,
                         isAddition: isAddition
                     }
@@ -82,7 +80,6 @@
                     let username = document.getElementById("inputParticipant" + id).value;
 
                     let obj = {
-                        id: id,
                         username: username,
                         isAddition: isAddition
                     }
@@ -158,7 +155,7 @@
                             <div id="ownedSheet<%= sheetId %>">
                                 <a href="/sheet/<%= sheetId %>" id="sheet<%= sheetId %>Name" class="button"><%= sheets[sheetId].name %></a>
                                 <button onclick="deleteSheet(<%= sheetId %>);">Supprimer</button>
-                                <button onclick="renameSheet(<%= sheetId %>);">Renommner</button>
+                                <button onclick="renameSheet(<%= sheetId %>);">Renommer</button>
                                 <p>Participants :</p>
                                 
                                 <div class="autocomplete">

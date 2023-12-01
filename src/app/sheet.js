@@ -10,7 +10,24 @@ export default class Sheet{
         this.owner = owner;
         this.users = [];
         this.data = {};
+        this.version = 0;
+        this.usersOnPage = [];
     }
+}
+
+export async function subscribe(req, res, next){
+    let sheet = easycollab.sheets[Number(req.params.sheetId)];
+    sheet.usersOnPage.push(res.locals.user.username);
+    next();
+}
+
+export async function unSubscribe(req, res, next){
+    let sheet = easycollab.sheets[Number(req.params.sheetId)];
+    let index = sheet.usersOnPage.indexOf(res.locals.user.username);
+    if (index > -1) {
+        sheet.usersOnPage.splice(index, 1);
+    }
+    next();
 }
 
 export async function renderSheet(req, res){
@@ -20,7 +37,9 @@ export async function renderSheet(req, res){
 
     if(user.ownedSheets.includes(sheetId) || user.sharedSheets.includes(sheetId)){
         res.render("sheet/sheet", easycollab.sheets[sheetId]); 
+        return;
     }
+    res.render(403, "/"); 
 }
 
 export async function createSheet(req, res){
@@ -34,52 +53,55 @@ export async function createSheet(req, res){
         user.ownedSheets.push(sheet.id);
         easycollab.save();
         res.redirect("/sheet/" + sheet.id);
+        return;
     }
+    res.render(403, "/"); 
 }
 
 export async function renameSheet(req, res){
     
-    let { id, name } = req.body;
+    let { name } = req.body;
 
     let user = easycollab.users[res.locals.user.username];
     let sheetId = Number(req.params.sheetId);
 
     if(name != "" && user.ownedSheets.includes(sheetId)){
-        let sheet = easycollab.sheets[id];
+        let sheet = easycollab.sheets[sheetId];
         sheet.name = name;
         easycollab.save();
         res.redirect(200, "/");
         return;
-    } else{
-        res.redirect(403, "/");
-    }
+    } 
+
+    res.redirect(403, "/");
 }
 
 export async function editData(req, res){
     
-    let { id, si, sj, cellValue } = req.body;
+    let { si, sj, cellValue } = req.body;
 
-    let idSheet = Number(id);
+    let sheetId = Number(req.params.sheetId);
     let i = Number(si);
     let j = Number(sj);
 
     let user = easycollab.users[res.locals.user.username];
 
-    if(user.ownedSheets.includes(idSheet) || user.sharedSheets.includes(idSheet)){
-        let sheet = easycollab.sheets[idSheet];
+    if(user.ownedSheets.includes(sheetId) || user.sharedSheets.includes(sheetId)){
+        let sheet = easycollab.sheets[sheetId];
         sheet.data[[i,j]] = cellValue;
         easycollab.save();
-        res.redirect(200, "/sheet/" + id);
-    } else{
-        res.redirect(403, "/sheet/" + id);
-    }
+        res.redirect(200, "/sheet/" + sheetId);
+        return;
+    } 
+
+    res.redirect(403, "/sheet/" + sheetId);
 }
 
 export async function editUsers(req, res){
 
-    let { id, username, isAddition } = req.body;
+    let { username, isAddition } = req.body;
 
-    let sheetId = Number(id);
+    let sheetId = Number(req.params.sheetId);
     let currUser = easycollab.users[res.locals.user.username];
 
     if(username == res.locals.user.username){
@@ -158,5 +180,5 @@ export async function remove(req, res){
 
     delete easycollab.sheets[sheetId];
     easycollab.save();
-    res.redirect("/");
+    res.redirect(200, "/");
 }

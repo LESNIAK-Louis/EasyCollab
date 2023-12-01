@@ -1,11 +1,11 @@
 import { authenticate, signin, signoff, signup } from "./app/account.js";
-import { createSheet, editData, remove, renderSheet, editUsers, renameSheet } from "./app/sheet.js";
+import { createSheet, editData, remove, renderSheet, editUsers, renameSheet, subscribe, unSubscribe } from "./app/sheet.js";
 import EasyCollab from "./app/easycollab.js";
 
 export let easycollab = new EasyCollab();
 easycollab.load();
 
-export function index(req, res) { console.log(easycollab);res.render("index", easycollab); }
+export function index(req, res) { res.render("index", easycollab); }
 
 export function auth(req, res, next) { authenticate(req, res, next); }
 
@@ -30,6 +30,10 @@ export function editSheet(req, res) { editData(req, res); }
 export function editSheetUsers(req, res) { editUsers(req, res); }
 
 export function editSheetName(req, res) { renameSheet(req, res); }
+
+export function subscribeSheet(req, res, next) { subscribe(req, res, next); }
+
+export function unSubscribeSheet(req, res, next) { unSubscribe(req, res, next); }
 
 export function removeSheet(req, res) { remove(req, res); }
 

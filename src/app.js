@@ -36,6 +36,8 @@ app
     .get("/account/signoff", routes.logoff)
     .get("/sheet/new", routes.getCreateSheetPage)
     .get("/sheet/:sheetId", routes.showSheet)
+    .get("/sheet/subscribe/:sheetId", routes.subscribeSheet)
+    .get("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
     // POST
     .post("/", routes.index)
     .post("/account/signin", routes.login)

@@ -34,4 +34,6 @@ export default class EasyCollab{
             .catch((error) => console.log(`Erreur en lecture : ${error.message}.`)
         );
     }
+
+      
 }
