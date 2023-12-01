@@ -30,6 +30,25 @@ export async function unSubscribe(req, res, next){
     next();
 }
 
+export async function update(req, res, next){
+    let sheet = easycollab.sheets[Number(req.params.sheetId)];
+
+    let clientVersion = req.headers['if-none-match'];
+    let waitTime = req.headers.prefer ? parseInt(req.headers.prefer.split('=')[1]) : 0;
+
+    if(Number(clientVersion) === sheet.version)
+    {
+        if (waitTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+
+        res.sendStatus(304);
+    } else {
+        res.set('ETag', sheet.version).send(sheet.data);
+    }
+    
+}
+
 export async function renderSheet(req, res){
 
     let user = easycollab.users[res.locals.user.username];
@@ -89,6 +108,7 @@ export async function editData(req, res){
     if(user.ownedSheets.includes(sheetId) || user.sharedSheets.includes(sheetId)){
         let sheet = easycollab.sheets[sheetId];
         sheet.data[[i,j]] = cellValue;
+        sheet.version += 1;
         easycollab.save();
         res.redirect(200, "/sheet/" + sheetId);
         return;

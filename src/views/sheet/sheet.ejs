@@ -8,16 +8,17 @@
     <body>
         <a href="/" class="button">Accueil</a>
 
+        <div id="usersConnected"></div>
         <% if (usersOnPage.length > 0) { %>
-        <div>
+        
             <p>Listes des utilisateurs connectés : </p>
             <ul>
             <% for(userConnected of usersOnPage) { %>
                 <li><%=userConnected%></li>
             <% } %>
             </ul>
-        </div>
         <% } %>
+        </div>
 
         <table id="sheetTable">
             <thead>
@@ -45,8 +46,9 @@
 
     <script type="text/javascript">
 
-        let version = 0;
+        let version = <%= version %>;
         subscribe();
+        update(300);
 
         window.addEventListener('unload', function(e) {
             fetch("/sheet/unsubscribe/<%= id %>", { method: "GET" });                    
@@ -71,6 +73,47 @@
             }
         }
 
+        async function update(time) {
+            try {
+                const response = await fetch("/sheet/update/<%= id %>", {
+                    method: "GET",
+                    headers: {
+                        'If-None-Match': version,
+                        Prefer: 'wait='+time,
+                        Accept: 'application/json'
+                    }
+                });    
+                
+                if (response.status == 502 || response.status == 304) {
+                    await update();
+                } else if (response.status != 200) { // Error
+                    console.log(response.statusText);
+
+                    // Reconnect in one second
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await update();
+                } else {
+                    version = Number(response.headers.get('ETag'));
+                    const data = await response.json();
+
+                    Object.keys(data).forEach(function(key) {
+
+                        let coord = key.split(',');
+                        let i = coord[0];
+                        let j = coord[1];
+                        
+                        let cell = document.getElementById("cell"+i+"_"+j);
+                        cell.value = data[key];
+                    });
+
+                    await update();
+                }
+                
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
         async function sendCell(i, j, value) {
         try {
                 let obj = {
@@ -87,6 +130,7 @@
                 });
         
                 if(response.ok){   
+                    version = version + 1; 
                 } else {
                     throw response.status;
                 }

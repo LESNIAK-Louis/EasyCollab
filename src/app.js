@@ -37,6 +37,7 @@ app
     .get("/sheet/new", routes.getCreateSheetPage)
     .get("/sheet/:sheetId", routes.showSheet)
     .get("/sheet/subscribe/:sheetId", routes.subscribeSheet)
+    .get("/sheet/update/:sheetId", routes.updateSheet)
     .get("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
     // POST
     .post("/", routes.index)
