@@ -220,7 +220,7 @@ export async function renameSheet(req, res){
 
 export async function editData(req, res){
 
-    if(!req.body || !req.body.si || !req.body.sj || !req.body.cellValue || !req.params || !req.params.sheetId || req.params.sheetId == ""){
+    if(!req.body || !req.body.si || !req.body.sj || !('cellValue' in req.body) || !req.params || !req.params.sheetId || req.params.sheetId == ""){
         res.sendStatus(400); return;
     }
     
