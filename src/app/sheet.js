@@ -226,7 +226,7 @@ export async function editData(req, res){
     
     let { si, sj, cellValue } = req.body;
 
-    if(si == "" || sj == "" || cellValue == ""){
+    if(si == "" || sj == ""){
         res.sendStatus(400); return;
     }
 
