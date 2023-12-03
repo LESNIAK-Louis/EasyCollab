@@ -62,7 +62,7 @@
                     const response = await fetch("/sheet/users/"+id, {
                         method: "PUT",
                         headers: { Accept: "application/json", "Content-Type": "application/json" },
-                        body: JSON.stringify(obj),
+                        body: JSON.stringify(obj)
                     });
     
                     if(response.ok){
@@ -87,7 +87,7 @@
                     const response = await fetch("/sheet/users/"+id, {
                         method: "PUT",
                         headers: { Accept: "application/json", "Content-Type": "application/json" },
-                        body: JSON.stringify(obj),
+                        body: JSON.stringify(obj)
                     });
 
                     let error = document.getElementById("sheet" + id + "Error");
@@ -110,7 +110,7 @@
                     } else {
 
                         switch(response.status){
-                            case 400:
+                            case 404:
                                 error.textContent = "Utilisateur introuvable";
                                 break;
                             case 409:

@@ -15,16 +15,16 @@
                 <tbody>
                     <tr>
                         <td><label for="username">Nom d'utilisateur :</label></td>
-                        <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
+                        <td><input name="username" value="<%= locals.username ?? '' %>" required/></td>
                     </tr>
                     <tr>
                         <td><label for="password">Mot de passe :</label></td>
-                        <td><input type="password" name="password" value="" /></td>
+                        <td><input type="password" name="password" value="" required/></td>
                         <td><label id="passwordMessage"></label></td>
                     </tr>
                     <tr>
                         <td><label for="passwordRepeated">Confirmer le mot de passe :</label></td>
-                        <td><input type="password" id="passwordRepeated" value=""/></td>
+                        <td><input type="password" id="passwordRepeated" value="" required/></td>
                         <td><label id="passwordRepeatedMessage"></label></td>
                     </tr>
                 </tbody>

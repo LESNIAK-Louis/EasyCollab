@@ -36,15 +36,17 @@ app
     .get("/account/signoff", routes.logoff)
     .get("/sheet/new", routes.getCreateSheetPage)
     .get("/sheet/:sheetId", routes.showSheet)
-    .get("/sheet/subscribe/:sheetId", routes.subscribeSheet)
     .get("/sheet/update/:sheetId", routes.updateSheet)
-    .get("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
+    .get("/sheet/usersOnPage/:sheetId", routes.usersOnPage)
+    
     // POST
     .post("/", routes.index)
     .post("/account/signin", routes.login)
     .post("/account/signup", routes.register)
     .post("/account/signoff", routes.logoff)
     .post("/sheet/new", routes.newSheet)
+    .post("/sheet/subscribe/:sheetId", routes.subscribeSheet)
+    .post("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
     // PUT
     .put("/sheet/:sheetId", routes.editSheet)
     .put("/sheet/users/:sheetId", routes.editSheetUsers)
