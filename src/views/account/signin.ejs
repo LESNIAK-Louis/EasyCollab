@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title>Sign in</title>
-        <script src="/javascripts/hash.js"></script>
-    </head>
-    <body>
-        <a href="/" class="button">Accueil</a>
-        <% if (locals.message)  %>
-        <%- locals.message %>
-        <form name="signinForm" action="/account/signin" method="POST">
-            <table>
-                <tbody>
-                    <tr>
-                        <td><label for="username">Nom d'utilisateur :</label></td>
-                        <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
-                    </tr>
-                    <tr>
-                        <td><label for="password">Mot de passe :</label></td>
-                        <td><input type="password" name="password" value="" /></td>
-                        <td><label id="passwordMessage"></label></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div><input type="submit" value="Se connecter"/></div>
-        </form>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Sign in</title>
+    <script src="/javascripts/hash.js"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <a href="/" class="btn btn-primary mt-5">Accueil</a>
+            <% if (locals.message) %>
+            <div class="alert alert-warning"><%- locals.message %></div>
+            <form name="signinForm" action="/account/signin" method="POST" class="mt-4">
+                <h2 class="mb-4">Connexion</h2>
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur :</label>
+                    <input type="text" name="username" class="form-control" value="<%= locals.username ?? '' %>"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" name="password" class="form-control"/>
+                    <small id="passwordMessage" class="form-text text-muted"></small>
+                </div>
+                <button type="submit" class="btn btn-success">Se connecter</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-        <script>
-            let signinForm = document.forms.signinForm;
-            signinForm.addEventListener("submit", (e) => {
-                e.preventDefault();
-                validateSignIn();
-            });
-            async function validateSignIn() {
-                let passwordMessage = document.getElementById("passwordMessage");
-                let passwordRepeated = document.getElementById("passwordRepeated");
-                passwordMessage.textContent = "";
+<script>
+    let signinForm = document.forms.signinForm;
+    signinForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        validateSignIn();
+    });
 
-                let rawValue = signinForm.password.value;
-                signinForm.password.value = await hashSHA256(rawValue);
-                signinForm.submit();
-                signinForm.password.value = rawValue;
-                
-            }
-        </script>
+    async function validateSignIn() {
+        let passwordMessage = document.getElementById("passwordMessage");
+        let passwordRepeated = document.getElementById("passwordRepeated");
+        passwordMessage.textContent = "";
 
-    </body>
+        let rawValue = signinForm.password.value;
+        signinForm.password.value = await hashSHA256(rawValue);
+        signinForm.submit();
+        signinForm.password.value = rawValue;
+    }
+</script>
+</body>
 </html>

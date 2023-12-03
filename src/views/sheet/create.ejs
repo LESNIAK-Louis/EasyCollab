@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title>Créer un document</title>
-    </head>
-    <body>
-        <a href="/" class="button">Accueil</a>
-        <form name="createSheetForm" action="/sheet/new" method="POST">
-            <label for="sheetNameInput">Nom du document : </label>
-            <input type="text" name="sheetName" size="40"/>
-
-            <div><input type="submit" value="Créer le document"/></div>
-        </form>
-    </body>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Créer un document</title>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <a href="/" class="btn btn-primary mt-5">Accueil</a>
+            <form name="createSheetForm" action="/sheet/new" method="POST" class="mt-4">
+                <h2 class="mb-4">Créer un document</h2>
+                <div class="form-group">
+                    <label for="sheetNameInput">Nom du document :</label>
+                    <input type="text" name="sheetName" id="sheetNameInput" class="form-control" size="40"/>
+                </div>
+                <button type="submit" class="btn btn-success">Créer le document</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
 </html>

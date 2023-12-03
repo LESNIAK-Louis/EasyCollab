@@ -1,65 +1,65 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title>Sign up</title>
-        <script src="/javascripts/hash.js"></script>
-    </head>
-    <body>
-        <a href="/" class="button">Accueil</a>
-        <% if (locals.message)  %>
-        <%- locals.message %>
-        <form name="signupForm" action="/account/signup" method="POST">
-            <table>
-                <tbody>
-                    <tr>
-                        <td><label for="username">Nom d'utilisateur :</label></td>
-                        <td><input name="username" value="<%= locals.username ?? '' %>" /></td>
-                    </tr>
-                    <tr>
-                        <td><label for="password">Mot de passe :</label></td>
-                        <td><input type="password" name="password" value="" /></td>
-                        <td><label id="passwordMessage"></label></td>
-                    </tr>
-                    <tr>
-                        <td><label for="passwordRepeated">Confirmer le mot de passe :</label></td>
-                        <td><input type="password" id="passwordRepeated" value=""/></td>
-                        <td><label id="passwordRepeatedMessage"></label></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div><input type="submit" value="Créer un compte"/></div>
-        </form>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Sign up</title>
+    <script src="/javascripts/hash.js"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <a href="/" class="btn btn-primary mt-5">Accueil</a>
+            <% if (locals.message) %>
+            <div class="alert alert-warning"><%- locals.message %></div>
+            <form name="signupForm" action="/account/signup" method="POST" class="mt-4">
+                <h2 class="mb-4">Créer un compte</h2>
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur :</label>
+                    <input type="text" name="username" class="form-control" value="<%= locals.username ?? '' %>"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" name="password" class="form-control"/>
+                    <small id="passwordMessage" class="form-text text-muted"></small>
+                </div>
+                <div class="form-group">
+                    <label for="passwordRepeated">Confirmer le mot de passe :</label>
+                    <input type="password" id="passwordRepeated" class="form-control"/>
+                    <small id="passwordRepeatedMessage" class="form-text text-muted"></small>
+                </div>
+                <button type="submit" class="btn btn-success">Créer un compte</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-        <script type="text/javascript">
-            var accountForm = document.forms.signupForm;
+<script type="text/javascript">
+    var accountForm = document.forms.signupForm;
 
-            accountForm.addEventListener("submit", (e) => {
-                e.preventDefault();
-                validateAccountCreation();
-            });
+    accountForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        validateAccountCreation();
+    });
 
-            async function validateAccountCreation() {
-                let passwordMessage = document.getElementById("passwordMessage");
-                let passwordRepeated = document.getElementById("passwordRepeated");
-                let passwordRepeatedMessage = document.getElementById("passwordRepeatedMessage");
-                passwordMessage.textContent = "";
-                passwordRepeatedMessage.textContent = "";
-                if (accountForm.password.value.length < 8) {
-                    passwordMessage.textContent = "Le mot de passe doit compter au moins 8 caractères.";
-                } 
-                else if (accountForm.password.value != passwordRepeated.value) {
-                    passwordRepeatedMessage.textContent = "Les mots de passe ne correspondent pas.";
-                } 
-                else {
-                    let rawValue = accountForm.password.value;
-                    accountForm.password.value = await hashSHA256(rawValue);
-                    accountForm.submit();
-                    accountForm.password.value = rawValue;
-                }
-            }
-        </script>
-        
-    </body>
+    async function validateAccountCreation() {
+        let passwordMessage = document.getElementById("passwordMessage");
+        let passwordRepeated = document.getElementById("passwordRepeated");
+        let passwordRepeatedMessage = document.getElementById("passwordRepeatedMessage");
+        passwordMessage.textContent = "";
+        passwordRepeatedMessage.textContent = "";
+        if (accountForm.password.value.length < 8) {
+            passwordMessage.textContent = "Le mot de passe doit compter au moins 8 caractères.";
+        } else if (accountForm.password.value != passwordRepeated.value) {
+            passwordRepeatedMessage.textContent = "Les mots de passe ne correspondent pas.";
+        } else {
+            let rawValue = accountForm.password.value;
+            accountForm.password.value = await hashSHA256(rawValue);
+            accountForm.submit();
+            accountForm.password.value = rawValue;
+        }
+    }
+</script>
+</body>
 </html>

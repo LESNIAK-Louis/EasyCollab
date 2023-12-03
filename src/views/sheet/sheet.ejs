@@ -1,144 +1,145 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title><%= name %></title>
-    </head>
-    <body>
-        <a href="/" class="button">Accueil</a>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-        <div id="usersConnected"></div>
-        <% if (usersOnPage.length > 0) { %>
-        
-            <p>Listes des utilisateurs connectés : </p>
-            <ul>
-            <% for(userConnected of usersOnPage) { %>
-                <li><%=userConnected%></li>
-            <% } %>
-            </ul>
+    <title><%= name %></title>
+</head>
+<body>
+<a href="/" class="btn btn-primary">Accueil</a>
+
+<div id="usersConnected"></div>
+<% if (usersOnPage.length > 0) { %>
+
+    <p>Listes des utilisateurs connectés : </p>
+    <ul class="list-group">
+        <% for(userConnected of usersOnPage) { %>
+            <li class="list-group-item"><%= userConnected %></li>
         <% } %>
-        </div>
+    </ul>
+<% } %>
+</div>
 
-        <table id="sheetTable">
-            <thead>
-                <tr>
-                    <th></th>
-                    <% for(var i = 65; i < 65+26; i++) {%>
-                        <th>&#<%= i %></th>
-                    <% }%>
-                </tr>
-            </thead>
-            <tbody>
-                <% for(var i = 1; i < 11; i++) {%>
-                    <tr>
-                        <th><%= i %></th>
-                        <% for(var j = 1; j < 27; j++) {%>
-                            <td>
-                                <input type="text" class="cell" id="cell<%= i %>_<%= j %>" size="10" value="<%= data[[i,j]] %>"/>
-                            </td>
-                        <% }%>
-                    </tr>
-                <% }%>
-            </tbody>
-        </table>
-    </body>
+<table id="sheetTable" class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th></th>
+        <% for(var i = 65; i < 65 + 26; i++) { %>
+            <th>&#<%= i %></th>
+        <% } %>
+    </tr>
+    </thead>
+    <tbody>
+    <% for(var i = 1; i < 11; i++) { %>
+        <tr>
+            <th><%= i %></th>
+            <% for(var j = 1; j < 27; j++) { %>
+                <td>
+                    <input type="text" class="cell" id="cell<%= i %>_<%= j %>" size="10" value="<%= data[[i, j]] %>"/>
+                </td>
+            <% } %>
+        </tr>
+    <% } %>
+    </tbody>
+</table>
+</body>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        let version = <%= version %>;
-        subscribe();
-        update(300);
+    let version = <%= version %>;
+    subscribe();
+    update(300);
 
-        window.addEventListener('unload', function(e) {
-            fetch("/sheet/unsubscribe/<%= id %>", { method: "GET" });                    
-        });
+    window.addEventListener('unload', function (e) {
+        fetch("/sheet/unsubscribe/<%= id %>", {method: "GET"});
+    });
 
-        for (let i = 1; i < 11; i++) {
-            for(let j = 1; j < 27; j++){
-                let cellIJ = document.getElementById("cell"+i+"_"+j);
-                cellIJ.addEventListener("keyup", (e) => {
-                    sendCell(i, j, cellIJ.value);
-                });
-            }
+    for (let i = 1; i < 11; i++) {
+        for (let j = 1; j < 27; j++) {
+            let cellIJ = document.getElementById("cell" + i + "_" + j);
+            cellIJ.addEventListener("keyup", (e) => {
+                sendCell(i, j, cellIJ.value);
+            });
         }
+    }
 
-        async function subscribe() {
-            try {
-                await fetch("/sheet/subscribe/<%= id %>", {
-                    method: "GET",
-                });                    
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-
-        async function update(time) {
-            try {
-                const response = await fetch("/sheet/update/<%= id %>", {
-                    method: "GET",
-                    headers: {
-                        'If-None-Match': version,
-                        Prefer: 'wait='+time,
-                        Accept: 'application/json'
-                    }
-                });    
-                
-                if (response.status == 502 || response.status == 304) {
-                    await update();
-                } else if (response.status != 200) { // Error
-                    console.log(response.statusText);
-
-                    // Reconnect in one second
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    await update();
-                } else {
-                    version = Number(response.headers.get('ETag'));
-                    const data = await response.json();
-
-                    Object.keys(data).forEach(function(key) {
-
-                        let coord = key.split(',');
-                        let i = coord[0];
-                        let j = coord[1];
-                        
-                        let cell = document.getElementById("cell"+i+"_"+j);
-                        cell.value = data[key];
-                    });
-
-                    await update();
-                }
-                
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-
-        async function sendCell(i, j, value) {
+    async function subscribe() {
         try {
-                let obj = {
-                    id: "<%= id %>",
-                    si: i,
-                    sj: j,
-                    cellValue: value
-                }
-
-                const response = await fetch("/sheet/<%= id %>", {
-                    method: "PUT",
-                    headers: { Accept: "application/json", "Content-Type": "application/json" },
-                    body: JSON.stringify(obj),
-                });
-        
-                if(response.ok){   
-                    version = version + 1; 
-                } else {
-                    throw response.status;
-                }
-                        
-            } catch (error) {
-                console.error("Error:", error);
-            }
+            await fetch("/sheet/subscribe/<%= id %>", {
+                method: "GET",
+            });
+        } catch (error) {
+            console.error("Error:", error);
         }
-    </script>
+    }
+
+    async function update(time) {
+        try {
+            const response = await fetch("/sheet/update/<%= id %>", {
+                method: "GET",
+                headers: {
+                    'If-None-Match': version,
+                    Prefer: 'wait=' + time,
+                    Accept: 'application/json'
+                }
+            });
+
+            if (response.status == 502 || response.status == 304) {
+                await update();
+            } else if (response.status != 200) { // Error
+                console.log(response.statusText);
+
+                // Reconnect in one second
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await update();
+            } else {
+                version = Number(response.headers.get('ETag'));
+                const data = await response.json();
+
+                Object.keys(data).forEach(function (key) {
+
+                    let coord = key.split(',');
+                    let i = coord[0];
+                    let j = coord[1];
+
+                    let cell = document.getElementById("cell" + i + "_" + j);
+                    cell.value = data[key];
+                });
+
+                await update();
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    async function sendCell(i, j, value) {
+        try {
+            let obj = {
+                id: "<%= id %>",
+                si: i,
+                sj: j,
+                cellValue: value
+            }
+
+            const response = await fetch("/sheet/<%= id %>", {
+                method: "PUT",
+                headers: {Accept: "application/json", "Content-Type": "application/json"},
+                body: JSON.stringify(obj),
+            });
+
+            if (response.ok) {
+                version = version + 1;
+            } else {
+                throw response.status;
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+</script>
 
 </html>
