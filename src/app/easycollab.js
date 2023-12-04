@@ -15,7 +15,22 @@ export default class EasyCollab{
     }
 
     async save(){
-        let json = JSON.stringify(this);
+
+        let sheetsSave = {};
+        console.log(this.sheets);
+        for (let key in this.sheets) {
+            const { usersOnPage, ...sheetSave } = this.sheets[key];
+            sheetsSave[key] = sheetSave;
+        };
+
+        let save = {
+            currentId: this.currentId,
+            users: this.users,
+            sheets : sheetsSave
+        }
+
+
+        let json = JSON.stringify(save);
         await writeFile("./data/spreadsheet.json", json).then(
             () => "ok",
             (error) => console.log(`Erreur lors de la sauvegarde : ${error.message}.`)
@@ -28,8 +43,18 @@ export default class EasyCollab{
             .then((text) => {
                 let spreadsheet = JSON.parse(text);
                 this.currentId = spreadsheet.currentId;
-                this.users = spreadsheet.users;
+                this.users = spreadsheet.users
+
+                for (let key in spreadsheet.sheets) {
+                    let usersOnPage = [];
+                    spreadsheet.sheets[key]['usersOnPage'] = usersOnPage;
+                };
+
                 this.sheets = spreadsheet.sheets;
+
+                
+
+              
             })
             .catch((error) => console.log(`Erreur en lecture : ${error.message}.`)
         );

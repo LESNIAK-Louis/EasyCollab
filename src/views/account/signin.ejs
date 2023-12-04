@@ -23,12 +23,12 @@
                 <h2 class="mb-4">Connexion</h2>
                 <div class="form-group">
                     <label for="username">Nom d'utilisateur :</label>
-                    <input type="text" name="username" class="form-control" value="<%= locals.username ?? '' %>"/>
+                    <input type="text" name="username" class="form-control" value="<%= locals.username ?? '' %> " required/>
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe :</label>
-                    <input type="password" name="password" class="form-control"/>
-                    <small id="passwordMessage" class="form-text text-muted"></small>
+                    <input type="password" name="password" class="form-control" required/>
+                    <small id="passwordMessage" class="form-text text-muted" ></small>
                 </div>
                 <button type="submit" class="btn btn-success">Se connecter</button>
             </form>
@@ -36,24 +36,24 @@
     </div>
 </div>
 
-<script>
+        <script>
+            let signinForm = document.forms.signinForm;
+            signinForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                validateSignIn();
+            });
+            async function validateSignIn() {
+                let passwordMessage = document.getElementById("passwordMessage");
+                let passwordRepeated = document.getElementById("passwordRepeated");
+                passwordMessage.textContent = "";
 
-    let signinForm = document.forms.signinForm;
-    signinForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        validateSignIn();
-    });
+                let rawValue = signinForm.password.value;
+                signinForm.password.value = await hashSHA256(rawValue);
+                signinForm.submit();
+                signinForm.password.value = rawValue;
+                
+            }
+        </script>
 
-    async function validateSignIn() {
-        let passwordMessage = document.getElementById("passwordMessage");
-        let passwordRepeated = document.getElementById("passwordRepeated");
-        passwordMessage.textContent = "";
-
-        let rawValue = signinForm.password.value;
-        signinForm.password.value = await hashSHA256(rawValue);
-        signinForm.submit();
-        signinForm.password.value = rawValue;
-    }
-</script>
-</body>
+    </body>
 </html>

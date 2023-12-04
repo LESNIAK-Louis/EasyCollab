@@ -59,77 +59,77 @@
                     isAddition: isAddition
                 }
 
-                const response = await fetch("/sheet/users/" + id, {
-                    method: "PUT",
-                    headers: {Accept: "application/json", "Content-Type": "application/json"},
-                    body: JSON.stringify(obj),
-                });
-
-                if (response.ok) {
-                    let div = document.getElementById("participant" + name + "sheet" + id);
-                    div.remove();
-                }
-
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-
-        async function addUser(id, isAddition) {
-            try {
-                let username = document.getElementById("inputParticipant" + id).value;
-
-                let obj = {
-                    username: username,
-                    isAddition: isAddition
-                }
-
-                const response = await fetch("/sheet/users/" + id, {
-                    method: "PUT",
-                    headers: {Accept: "application/json", "Content-Type": "application/json"},
-                    body: JSON.stringify(obj),
-                });
-
-                let error = document.getElementById("sheet" + id + "Error");
-
-                if (response.ok) {
-
-                    var divToAdd = document.createElement('div');
-                    let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
-                        + '' + username + ''
-                        + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
-                        + '</div>';
-                    divToAdd.innerHTML = contentDiv;
-
-                    let div = document.getElementById("participantsSheet" + id);
-
-                    div.appendChild(divToAdd);
-
-                    error.textContent = "";
-
-                } else {
-
-                    switch (response.status) {
-                        case 400:
-                            error.textContent = "Utilisateur introuvable";
-                            break;
-                        case 409:
-                            error.textContent = "Utilisateur déjà ajouté";
-                            break;
-                        case 406:
-                            error.textContent = "Vous ne pouvez vous ajouter vous même";
-                            break;
-                        default:
-                            error.textContent = "";
-                            break;
+                    const response = await fetch("/sheet/users/"+id, {
+                        method: "PUT",
+                        headers: { Accept: "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify(obj)
+                    });
+    
+                    if(response.ok){
+                        let div = document.getElementById("participant"+ name +"sheet" + id);
+                        div.remove();
                     }
+                    
+                } catch (error) {
+                    console.error("Error:", error);
                 }
-
-            } catch (error) {
-                console.error("Error:", error);
             }
-        }
-    </script>
+
+            async function addUser(id, isAddition) {
+                try {
+                    let username = document.getElementById("inputParticipant" + id).value;
+
+                    let obj = {
+                        username: username,
+                        isAddition: isAddition
+                    }
+
+                    const response = await fetch("/sheet/users/"+id, {
+                        method: "PUT",
+                        headers: { Accept: "application/json", "Content-Type": "application/json" },
+                        body: JSON.stringify(obj)
+                    });
+
+                    let error = document.getElementById("sheet" + id + "Error");
+    
+                    if(response.ok){
+                        
+                        var divToAdd = document.createElement('div');
+                        let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
+                            + '' + username + ''
+                            + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'                     
+                            + '</div>';
+                        divToAdd.innerHTML = contentDiv;
+
+                        let div = document.getElementById("participantsSheet" + id);
+
+                        div.appendChild(divToAdd);
+
+                        error.textContent = "";
+
+                    } else {
+
+                        switch(response.status){
+                            case 404:
+                                error.textContent = "Utilisateur introuvable";
+                                break;
+                            case 409:
+                                error.textContent = "Utilisateur déjà ajouté";
+                                break;
+                            case 406:
+                                error.textContent = "Vous ne pouvez vous ajouter vous même";
+                                break;
+                            default:
+                                error.textContent = "";
+                                break;
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+        </script>
 
 </head>
 <body class="bg-light">
