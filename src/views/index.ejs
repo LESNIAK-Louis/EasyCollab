@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/1eeeff3f3f.js" crossorigin="anonymous"></script>
     <title>Easy Collab</title>
 
     <script>
@@ -59,77 +60,77 @@
                     isAddition: isAddition
                 }
 
-                    const response = await fetch("/sheet/users/"+id, {
-                        method: "PUT",
-                        headers: { Accept: "application/json", "Content-Type": "application/json" },
-                        body: JSON.stringify(obj)
-                    });
-    
-                    if(response.ok){
-                        let div = document.getElementById("participant"+ name +"sheet" + id);
-                        div.remove();
-                    }
-                    
-                } catch (error) {
-                    console.error("Error:", error);
+                const response = await fetch("/sheet/users/" + id, {
+                    method: "PUT",
+                    headers: {Accept: "application/json", "Content-Type": "application/json"},
+                    body: JSON.stringify(obj)
+                });
+
+                if (response.ok) {
+                    let div = document.getElementById("participant" + name + "sheet" + id);
+                    div.remove();
                 }
+
+            } catch (error) {
+                console.error("Error:", error);
             }
+        }
 
-            async function addUser(id, isAddition) {
-                try {
-                    let username = document.getElementById("inputParticipant" + id).value;
+        async function addUser(id, isAddition) {
+            try {
+                let username = document.getElementById("inputParticipant" + id).value;
 
-                    let obj = {
-                        username: username,
-                        isAddition: isAddition
-                    }
-
-                    const response = await fetch("/sheet/users/"+id, {
-                        method: "PUT",
-                        headers: { Accept: "application/json", "Content-Type": "application/json" },
-                        body: JSON.stringify(obj)
-                    });
-
-                    let error = document.getElementById("sheet" + id + "Error");
-    
-                    if(response.ok){
-                        
-                        var divToAdd = document.createElement('div');
-                        let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
-                            + '' + username + ''
-                            + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'                     
-                            + '</div>';
-                        divToAdd.innerHTML = contentDiv;
-
-                        let div = document.getElementById("participantsSheet" + id);
-
-                        div.appendChild(divToAdd);
-
-                        error.textContent = "";
-
-                    } else {
-
-                        switch(response.status){
-                            case 404:
-                                error.textContent = "Utilisateur introuvable";
-                                break;
-                            case 409:
-                                error.textContent = "Utilisateur déjà ajouté";
-                                break;
-                            case 406:
-                                error.textContent = "Vous ne pouvez vous ajouter vous même";
-                                break;
-                            default:
-                                error.textContent = "";
-                                break;
-                        }
-                    }
-                    
-                } catch (error) {
-                    console.error("Error:", error);
+                let obj = {
+                    username: username,
+                    isAddition: isAddition
                 }
+
+                const response = await fetch("/sheet/users/" + id, {
+                    method: "PUT",
+                    headers: {Accept: "application/json", "Content-Type": "application/json"},
+                    body: JSON.stringify(obj)
+                });
+
+                let error = document.getElementById("sheet" + id + "Error");
+
+                if (response.ok) {
+
+                    var divToAdd = document.createElement('div');
+                    let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
+                        + '' + username + ''
+                        + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
+                        + '</div>';
+                    divToAdd.innerHTML = contentDiv;
+
+                    let div = document.getElementById("participantsSheet" + id);
+
+                    div.appendChild(divToAdd);
+
+                    error.textContent = "";
+
+                } else {
+
+                    switch (response.status) {
+                        case 404:
+                            error.textContent = "Utilisateur introuvable";
+                            break;
+                        case 409:
+                            error.textContent = "Utilisateur déjà ajouté";
+                            break;
+                        case 406:
+                            error.textContent = "Vous ne pouvez vous ajouter vous même";
+                            break;
+                        default:
+                            error.textContent = "";
+                            break;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
             }
-        </script>
+        }
+    </script>
 
 </head>
 <body class="bg-light">
@@ -141,7 +142,7 @@
         <% if (locals.user) { %>
             <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
         <% }
-         else { %>
+        else { %>
             <div class="d-flex flex-row">
                 <div class="p-2">
                     <a href="/account/signin" class="btn btn-primary ">Se connecter</a>
@@ -168,20 +169,22 @@
         <div id="ownedSheets" class="mb-4">
             <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].ownedSheets) { %>
-                    <div id="ownedSheet<%= sheetId %>" class="mb-2">
-                        <a href="/sheet/<%= sheetId %>" id="sheet<%= sheetId %>Name"
-                           class="btn btn-outline-secondary btn-lg"><%= sheets[sheetId].name %></a>
-                        <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger ">Supprimer</button>
-                        <button onclick="renameSheet(<%= sheetId %>);" class="btn btn-secondary">Renommer</button>
-                        <p>Participants :</p>
-
-                        <div class="autocomplete">
-                            <input type="text" id="inputParticipant<%= sheetId %>" class="form-control mb-2">
+                    <div id="ownedSheet<%= sheetId %>" class="border border-1 mb-4 rounded ">
+                        <h2 class="d-flex justify-content-center"><a href="/sheet/<%= sheetId %>"
+                                                                     id="sheet<%= sheetId %>Name"
+                                                                     class="fs-1 font-size-lg"><%= sheets[sheetId].name %></a>
+                        </h2>
+                        <h5>Participants :</h5>
+                        <div class="autocomplete d-flex align-items-top">
+                            <input placeholder="Rechercher une personne" type="search"
+                                   id="inputParticipant<%= sheetId %>" class="form-control mr-2 flex-grow-1">
                             <button id="ajouterParticipant<%= sheetId %>" onclick="addUser(<%= sheetId %>, true);"
-                                    class="btn btn-info">+
+                                    type="button" class="btn btn-primary" data-mdb-ripple-init>
+                                <i class="fas fa-search"></i>
                             </button>
-                            <p id="sheet<%= sheetId %>Error" class="text-danger"></p>
                         </div>
+                        <p id="sheet<%= sheetId %>Error" class="text-danger"></p>
+
 
                         <div id="participantsSheet<%= sheetId %>">
                             <% if(sheets[sheetId].users.length > 0) { %>
@@ -195,6 +198,10 @@
                                     </div>
                                 <% } %>
                             <% } %>
+                        </div>
+                        <div class="d-flex justify-content-md-end">
+                            <button onclick="renameSheet(<%= sheetId %>);" class="btn btn-secondary mr-2">Renommer</button>
+                            <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger ">Supprimer</button>
                         </div>
                     </div>
                 <% } %>
@@ -217,7 +224,7 @@
             <% } %>
         </div>
 
-    <% }%>
+    <% } %>
 </div>
 </body>
 </html>
