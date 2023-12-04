@@ -133,30 +133,45 @@
 
 </head>
 <body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div>
+        <a href="/" class="navbar-brand"> <img src="../logo.png" alt="Logo" width="200" height="70"></a>
+    </div>
+    <div class="ml-auto">
+        <% if (locals.user) { %>
+            <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
+        <% }
+         else { %>
+            <div class="d-flex flex-row">
+                <div class="p-2">
+                    <a href="/account/signin" class="btn btn-primary ">Se connecter</a>
+                </div>
+                <div class="p-2">
+                    <a href="/account/signup" class="btn btn-success ">Créer un compte</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</nav>
 <div class="container">
     <div class="d-flex justify-content-between align-items-start mt-4 mb-4">
         <h1>Easy Collab</h1>
-        <div>
-            <% if (locals.user) { %>
-                <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
-            <% } %>
-        </div>
     </div>
 
     <% if (locals.user) { %>
-        <p>Bienvenue utilisateur : <%= locals.user.username %></p>
+        <h1><%= locals.user.username %></h1>
         <div>
             <a href="/sheet/new" class="btn btn-success mb-2">Créer un document</a>
         </div>
 
         <h2>Mes Documents</h2>
         <div id="ownedSheets" class="mb-4">
-                <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
+            <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].ownedSheets) { %>
                     <div id="ownedSheet<%= sheetId %>" class="mb-2">
                         <a href="/sheet/<%= sheetId %>" id="sheet<%= sheetId %>Name"
-                           class="btn btn-primary"><%= sheets[sheetId].name %></a>
-                        <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger">Supprimer</button>
+                           class="btn btn-outline-secondary btn-lg"><%= sheets[sheetId].name %></a>
+                        <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger ">Supprimer</button>
                         <button onclick="renameSheet(<%= sheetId %>);" class="btn btn-secondary">Renommer</button>
                         <p>Participants :</p>
 
@@ -202,16 +217,7 @@
             <% } %>
         </div>
 
-    <% } else { %>
-        <div class="row mt-4">
-            <div class="col">
-                <a href="/account/signin" class="btn btn-primary">Se connecter</a>
-            </div>
-            <div class="col">
-                <a href="/account/signup" class="btn btn-success">Créer un compte</a>
-            </div>
-        </div>
-    <% } %>
+    <% }%>
 </div>
 </body>
 </html>
