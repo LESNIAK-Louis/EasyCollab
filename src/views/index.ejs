@@ -151,7 +151,7 @@
 
         <h2>Mes Documents</h2>
         <div id="ownedSheets" class="mb-4">
-            <% if(users[locals.user.username].ownedSheets.length > 0) { %>
+                <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].ownedSheets) { %>
                     <div id="ownedSheet<%= sheetId %>" class="mb-2">
                         <a href="/sheet/<%= sheetId %>" id="sheet<%= sheetId %>Name"
@@ -188,7 +188,7 @@
 
         <h2>Documents Partagés</h2>
         <div id="sharedSheets">
-            <% if(users[locals.user.username].sharedSheets.length > 0) { %>
+            <% if(users[locals.user.username] && users[locals.user.username].sharedSheets && users[locals.user.username].sharedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].sharedSheets) { %>
                     <div id="sharedSheet<%= sheetId %>" class="mb-2">
                         <a href="/sheet/<%= sheetId %>" class="btn btn-primary"><%= sheets[sheetId].name %></a>
