@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="/stylesheets/index.css" />
-        <title><%= name %></title>
-    </head>
-    <body>
-        <a href="/" class="button">Accueil</a>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-        <div id="usersConnected"></div>
-        <% if (usersOnPage.length > 0) { %>
-        
-            <p>Listes des utilisateurs connectés : </p>
-            <ul  id="listConnectedUsers">
-            <% for(userConnected of usersOnPage) { %>
-                <li><%=userConnected%></li>
-            <% } %>
-            </ul>
+    <title><%= name %></title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div>
+        <a href="/" class="navbar-brand"> <img src="../logo.png" alt="Logo" width="200" height="70"></a>
+    </div>
+    <div class="ml-auto">
+        <% if (locals.user) { %>
+            <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
         <% } %>
-        </div>
+    </div>
+</nav>
+<div id="usersConnected"></div>
+<% if (usersOnPage.length > 0) { %>
+
+    <p>Listes des utilisateurs connectés : </p>
+    <ul class="list-group" >
+        <% for(userConnected of usersOnPage) { %>
+            <li class="list-group-item"><%= userConnected %></li>
+        <% } %>
+    </ul>
+<% } %>
+</div>
 
 <table id="sheetTable" class="table table-bordered table-hover">
     <thead>
