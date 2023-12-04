@@ -18,16 +18,15 @@
     </div>
 </nav>
 <div id="usersConnected"></div>
-<% if (usersOnPage.length > 0) { %>
-
-    <p>Listes des utilisateurs connectés : </p>
-    <ul class="list-group" >
+<p>Listes des utilisateurs connectés : </p>
+<ul class="list-group" id="listConnectedUsers">
+    <% if (usersOnPage.length > 0) { %>
         <% for(userConnected of usersOnPage) { %>
-            <li class="list-group-item"><%= userConnected %></li>
         <% } %>
-    </ul>
-<% } %>
-</div>
+
+        <li class="list-group-item"><%= userConnected %></li>
+    <% } %>
+</ul>
 
 <table id="sheetTable" class="table table-bordered table-hover">
     <thead>
@@ -58,19 +57,13 @@
     let version = <%= version %>;
     subscribe();
     update(300);
-        let version = <%= version %>;
-        subscribe();
-        update(300);
-        updateUsersConnected(2000);
+    updateUsersConnected(2000);
 
-    window.addEventListener('unload', function (e) {
-        fetch("/sheet/unsubscribe/<%= id %>", {method: "GET"});
-    });
-        window.onbeforeunload = function() {
-            navigator.sendBeacon("/sheet/unsubscribe/<%= id %>", null);
+    window.onbeforeunload = function () {
+        navigator.sendBeacon("/sheet/unsubscribe/<%= id %>", null);
 
-            return undefined;
-        }
+        return undefined;
+    }
 
     for (let i = 1; i < 11; i++) {
         for (let j = 1; j < 27; j++) {
@@ -81,117 +74,117 @@
         }
     }
 
-        async function subscribe() {
-            try {
-                await fetch("/sheet/subscribe/<%= id %>", {
-                    method: "POST",
-                });                    
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-
-        async function update(time) {
-            try {
-                const response = await fetch("/sheet/update/<%= id %>", {
-                    method: "GET",
-                    headers: {
-                        'If-None-Match': version,
-                        Prefer: 'wait='+time,
-                        Accept: 'application/json'
-                    }
-                });    
-                
-                if (response.status == 304) {
-                    await update(time);
-                } else if (response.status != 200) { // Error
-                    console.log(response.statusText);
-
-                    // Reconnect in one second
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    await update(time);
-                } else {
-                    const data = await response.json();
-                    version = Number(response.headers.get('ETag'));
-
-                    Object.keys(data).forEach(function(key) {
-
-                        let coord = key.split(',');
-                        let i = coord[0];
-                        let j = coord[1];
-                        
-                        let cell = document.getElementById("cell"+i+"_"+j);
-                        cell.value = data[key];
-                    });
-
-                    await update(time);
-                }
-
-                if(response.status == 304 || 200){
-
-                }
-
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-
-        async function updateUsersConnected(time){
-
-            try {
-                const response = await fetch("/sheet/usersOnPage/<%= id %>", {
-                    method: "GET",
-                });
-
-                if (response.status == 200) {
-                    const data = await response.json();
-
-                    let list = document.getElementById("listConnectedUsers");
-
-                    while( list.firstChild ){
-                        list.removeChild(list.firstChild );
-                    }
-
-                    for (var i = 0; i < data.length; i++) {
-                        var li = document.createElement('li');
-                        li.textContent = data[i];
-                        list.appendChild(li);
-                    }
-                }
-
-                await new Promise(resolve => setTimeout(resolve, time));
-                await updateUsersConnected(time);
-
-            } catch (error) {
-                    console.error("Error:", error);
-            }
-        }
-
-        async function sendCell(i, j, value) {
+    async function subscribe() {
         try {
-                let obj = {
-                    id: "<%= id %>",
-                    si: i,
-                    sj: j,
-                    cellValue: value
+            await fetch("/sheet/subscribe/<%= id %>", {
+                method: "POST",
+            });
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    async function update(time) {
+        try {
+            const response = await fetch("/sheet/update/<%= id %>", {
+                method: "GET",
+                headers: {
+                    'If-None-Match': version,
+                    Prefer: 'wait=' + time,
+                    Accept: 'application/json'
+                }
+            });
+
+            if (response.status == 304) {
+                await update(time);
+            } else if (response.status != 200) { // Error
+                console.log(response.statusText);
+
+                // Reconnect in one second
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await update(time);
+            } else {
+                const data = await response.json();
+                version = Number(response.headers.get('ETag'));
+
+                Object.keys(data).forEach(function (key) {
+
+                    let coord = key.split(',');
+                    let i = coord[0];
+                    let j = coord[1];
+
+                    let cell = document.getElementById("cell" + i + "_" + j);
+                    cell.value = data[key];
+                });
+
+                await update(time);
+            }
+
+            if (response.status == 304 || 200) {
+
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    async function updateUsersConnected(time) {
+
+        try {
+            const response = await fetch("/sheet/usersOnPage/<%= id %>", {
+                method: "GET",
+            });
+
+            if (response.status == 200) {
+                const data = await response.json();
+
+                let list = document.getElementById("listConnectedUsers");
+
+                while (list.firstChild) {
+                    list.removeChild(list.firstChild);
                 }
 
-                const response = await fetch("/sheet/<%= id %>", {
-                    method: "PUT",
-                    headers: { Accept: "application/json", "Content-Type": "application/json" },
-                    body: JSON.stringify(obj),
-                });
-        
-                if(response.ok){   
-                    version = version + 1; 
-                } else {
-                    throw response.status;
+                for (var i = 0; i < data.length; i++) {
+                    var li = document.createElement('li');
+                    li.textContent = data[i];
+                    list.appendChild(li);
                 }
-                        
-            } catch (error) {
-                console.error("Error:", error);
             }
+
+            await new Promise(resolve => setTimeout(resolve, time));
+            await updateUsersConnected(time);
+
+        } catch (error) {
+            console.error("Error:", error);
         }
-    </script>
+    }
+
+    async function sendCell(i, j, value) {
+        try {
+            let obj = {
+                id: "<%= id %>",
+                si: i,
+                sj: j,
+                cellValue: value
+            }
+
+            const response = await fetch("/sheet/<%= id %>", {
+                method: "PUT",
+                headers: {Accept: "application/json", "Content-Type": "application/json"},
+                body: JSON.stringify(obj),
+            });
+
+            if (response.ok) {
+                version = version + 1;
+            } else {
+                throw response.status;
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+</script>
 
 </html>
