@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+    <div>
+        <a href="/" class="navbar-brand"> <img src="../logo.png" alt="Logo" width="200" height="70"></a>
+    </div>
+    <div class=" d-flex align-content-start ">
+        <% if (locals.user) { %>
+            <div class="p-2">
+                <button type="button" class="btn btn-outline-dark "><%= locals.user.username %></button>
+
+            </div>
+            <div class="p-2">
+                <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
+            </div>
+        <% }
+        else { %>
+            <div class="d-flex flex-row">
+
+                <div class="p-2">
+                    <a href="/account/signin" class="btn btn-primary ">Se connecter</a>
+                </div>
+                <div class="p-2">
+                    <a href="/account/signup" class="btn btn-success ">Créer un compte</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</nav>

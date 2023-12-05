@@ -98,7 +98,7 @@
                     var divToAdd = document.createElement('div');
                     let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
                         + '' + username + ''
-                        + '<button id="retirerParticipant' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
+                        + '<button  id="retirerParticipant" class="btn btn-outline-dark"' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
                         + '</div>';
                     divToAdd.innerHTML = contentDiv;
 
@@ -134,47 +134,27 @@
 
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div>
-        <a href="/" class="navbar-brand"> <img src="../logo.png" alt="Logo" width="200" height="70"></a>
-    </div>
-    <div class="ml-auto">
-        <% if (locals.user) { %>
-            <a href="/account/signoff" class="btn btn-danger">Se déconnecter</a>
-        <% }
-        else { %>
-            <div class="d-flex flex-row">
-                <div class="p-2">
-                    <a href="/account/signin" class="btn btn-primary ">Se connecter</a>
-                </div>
-                <div class="p-2">
-                    <a href="/account/signup" class="btn btn-success ">Créer un compte</a>
-                </div>
-            </div>
-        <% } %>
-    </div>
-</nav>
+<%- include('navbar.ejs') %>)
 <div class="container">
-    <div class="d-flex justify-content-between align-items-start mt-4 mb-4">
-        <h1>Easy Collab</h1>
+    <div class="d-flex justify-content-center align-items-center mt-4 mb-4">
+        <h1>Bienvenue !</h1>
     </div>
 
     <% if (locals.user) { %>
-        <h1><%= locals.user.username %></h1>
         <div>
             <a href="/sheet/new" class="btn btn-success mb-2">Créer un document</a>
         </div>
 
         <h2>Mes Documents</h2>
-        <div id="ownedSheets" class="mb-4">
+        <div id="ownedSheets" class=" d-flex align-content-stretch flex-wrap ">
             <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].ownedSheets) { %>
-                    <div id="ownedSheet<%= sheetId %>" class="border border-1 mb-4 rounded ">
+                    <div id="ownedSheet<%= sheetId %>"
+                         class=" d-flex flex-column justify-content-between border border-1 mb-2 mr-4 rounded ">
                         <h2 class="d-flex justify-content-center"><a href="/sheet/<%= sheetId %>"
                                                                      id="sheet<%= sheetId %>Name"
                                                                      class="fs-1 font-size-lg"><%= sheets[sheetId].name %></a>
                         </h2>
-                        <h5>Participants :</h5>
                         <div class="autocomplete d-flex align-items-top">
                             <input placeholder="Rechercher une personne" type="search"
                                    id="inputParticipant<%= sheetId %>" class="form-control mr-2 flex-grow-1">
@@ -183,8 +163,11 @@
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
+
                         <p id="sheet<%= sheetId %>Error" class="text-danger"></p>
 
+                        <!-- faire une fonction qui get le nbre de participant et affiche  la ligne en dessous Participant en fonctions de si y'a un participant ou pas -->
+                        <h5>Participants :</h5>
 
                         <div id="participantsSheet<%= sheetId %>">
                             <% if(sheets[sheetId].users.length > 0) { %>
@@ -193,13 +176,13 @@
                                         <%= username %>
                                         <button id="retirerParticipant<%= sheetId %>"
                                                 onclick="deleteUser(<%= sheetId %>, '<%= username %>', false);"
-                                                class="btn btn-warning">-
+                                                class="btn btn-outline-dark">-
                                         </button>
                                     </div>
                                 <% } %>
                             <% } %>
                         </div>
-                        <div class="d-flex justify-content-md-end">
+                        <div class="d-flex justify-content-end">
                             <button onclick="renameSheet(<%= sheetId %>);" class="btn btn-secondary mr-2">Renommer</button>
                             <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger ">Supprimer</button>
                         </div>
@@ -209,11 +192,11 @@
         </div>
 
         <h2>Documents Partagés</h2>
-        <div id="sharedSheets">
+        <div id="sharedSheets" class=" d-flex flex-wrap  ">
             <% if(users[locals.user.username] && users[locals.user.username].sharedSheets && users[locals.user.username].sharedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].sharedSheets) { %>
-                    <div id="sharedSheet<%= sheetId %>" class="mb-2">
-                        <a href="/sheet/<%= sheetId %>" class="btn btn-primary"><%= sheets[sheetId].name %></a>
+                    <div id="sharedSheet<%= sheetId %>" class="border ml-2 pr-5 mb-2 rounded">
+                        <a href="/sheet/<%= sheetId %>" class="d-flex justify-content-center"><h4><%= sheets[sheetId].name %></h4></a>
                         <p>Détenteur : <%= sheets[sheetId].owner %></p>
                         <p>Participants :</p>
                         <% for(user of sheets[sheetId].users) { %>
@@ -223,8 +206,27 @@
                 <% } %>
             <% } %>
         </div>
-
+    <% } else { %>
+        <div><h4><strong>Easy Collab est une plateforme révolutionnaire conçue pour simplifier la gestion de feuilles de
+                    calcul
+                    en
+                    temps réel.
+                    Notre mission est de rendre la collaboration sur des données chiffrées aussi fluide que possible.
+                    Avec Easy Collab, vous pouvez travailler en équipe sur des tableaux de données,
+                    des graphiques et des calculs, tout en bénéficiant d'une synchronisation instantanée des
+                    modifications.
+                    Plus de pertes de temps à envoyer des fichiers ou à attendre des mises à jour manuelles. Avec Easy
+                    Collab,
+                    la productivité atteint de nouveaux sommets
+                    , et la gestion des données devient un jeu d'enfant. Rejoignez notre communauté de collaborateurs
+                    efficaces
+                    et
+                    transformez la façon dont vous gérez vos feuilles de calcul. Facilité, collaboration et temps réel -
+                    c'est
+                    Easy Collab.
+                </strong></h4></div>
     <% } %>
+
 </div>
 </body>
 </html>
