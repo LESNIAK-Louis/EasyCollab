@@ -97,8 +97,8 @@
 
                     var divToAdd = document.createElement('div');
                     let contentDiv = '<div id="participant' + username + 'sheet' + id + '">'
-                        + '' + username + ''
-                        + '<button  id="retirerParticipant" class="btn btn-outline-dark"' + id + '" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
+                        + '' + username + ' '
+                        + '<button  id="retirerParticipant' + id + '" class="btn btn-outline-dark" onclick="deleteUser(' + id + ', \'' + username + '\', false);">-</button>'
                         + '</div>';
                     divToAdd.innerHTML = contentDiv;
 
@@ -134,7 +134,7 @@
 
 </head>
 <body class="bg-light">
-<%- include('navbar.ejs') %>)
+<%- include('navbar.ejs') %>
 <div class="container">
     <div class="d-flex justify-content-center align-items-center mt-4 mb-4">
         <h1>Bienvenue !</h1>
@@ -144,23 +144,28 @@
         <div>
             <a href="/sheet/new" class="btn btn-success mb-2">Créer un document</a>
         </div>
+        </br>
 
         <h2>Mes Documents</h2>
-        <div id="ownedSheets" class=" d-flex align-content-stretch flex-wrap ">
+        </br>
+        <div id="ownedSheets" class="d-flex align-content-stretch flex-wrap">
             <% if(users[locals.user.username] && users[locals.user.username].ownedSheets && users[locals.user.username].ownedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].ownedSheets) { %>
                     <div id="ownedSheet<%= sheetId %>"
-                         class=" d-flex flex-column justify-content-between border border-1 mb-2 mr-4 rounded ">
+                         class=" d-flex flex-column justify-content-between border border-1 mb-2 mr-4 rounded "
+                         style="padding: 5px;"
+                         >
+
                         <h2 class="d-flex justify-content-center"><a href="/sheet/<%= sheetId %>"
                                                                      id="sheet<%= sheetId %>Name"
                                                                      class="fs-1 font-size-lg"><%= sheets[sheetId].name %></a>
                         </h2>
                         <div class="autocomplete d-flex align-items-top">
-                            <input placeholder="Rechercher une personne" type="search"
+                            <input placeholder="Ajouter un collaborateur" type="search"
                                    id="inputParticipant<%= sheetId %>" class="form-control mr-2 flex-grow-1">
                             <button id="ajouterParticipant<%= sheetId %>" onclick="addUser(<%= sheetId %>, true);"
                                     type="button" class="btn btn-primary" data-mdb-ripple-init>
-                                <i class="fas fa-search"></i>
+                                <i class="fa fa-user-plus  aria-hidden="true"></i>
                             </button>
                         </div>
 
@@ -182,7 +187,7 @@
                                 <% } %>
                             <% } %>
                         </div>
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-end" style="margin-top: 2px;">
                             <button onclick="renameSheet(<%= sheetId %>);" class="btn btn-secondary mr-2">Renommer</button>
                             <button onclick="deleteSheet(<%= sheetId %>);" class="btn btn-danger ">Supprimer</button>
                         </div>
@@ -190,12 +195,13 @@
                 <% } %>
             <% } %>
         </div>
-
+        </br>
         <h2>Documents Partagés</h2>
+        </br>
         <div id="sharedSheets" class=" d-flex flex-wrap  ">
             <% if(users[locals.user.username] && users[locals.user.username].sharedSheets && users[locals.user.username].sharedSheets.length > 0) { %>
                 <% for(sheetId of users[locals.user.username].sharedSheets) { %>
-                    <div id="sharedSheet<%= sheetId %>" class="border ml-2 pr-5 mb-2 rounded">
+                    <div id="sharedSheet<%= sheetId %>" class="border ml-2 pr-5 mb-2 rounded" style="padding: 5px;">
                         <a href="/sheet/<%= sheetId %>" class="d-flex justify-content-center"><h4><%= sheets[sheetId].name %></h4></a>
                         <p>Détenteur : <%= sheets[sheetId].owner %></p>
                         <p>Participants :</p>
@@ -207,24 +213,21 @@
             <% } %>
         </div>
     <% } else { %>
-        <div><h4><strong>Easy Collab est une plateforme révolutionnaire conçue pour simplifier la gestion de feuilles de
+        <div><p style="text-align: center; font-size: 26px;"><strong>EasyCollab est une plateforme révolutionnaire conçue pour simplifier la gestion de feuilles de
                     calcul
                     en
                     temps réel.
-                    Notre mission est de rendre la collaboration sur des données chiffrées aussi fluide que possible.
-                    Avec Easy Collab, vous pouvez travailler en équipe sur des tableaux de données,
-                    des graphiques et des calculs, tout en bénéficiant d'une synchronisation instantanée des
+                    Notre mission est de rendre la collaboration aussi fluide que possible.
+                    Avec EasyCollab, vous pouvez travailler en équipe sur des tableaux de données tout en bénéficiant d'une synchronisation instantanée des
                     modifications.
-                    Plus de pertes de temps à envoyer des fichiers ou à attendre des mises à jour manuelles. Avec Easy
-                    Collab,
-                    la productivité atteint de nouveaux sommets
-                    , et la gestion des données devient un jeu d'enfant. Rejoignez notre communauté de collaborateurs
+                    Plus de pertes de temps à envoyer des fichiers ou à attendre des mises à jour manuelles. Avec EasyCollab,
+                    la productivité atteint de nouveaux sommets et la gestion des données devient un jeu d'enfant. Rejoignez notre communauté de collaborateurs
                     efficaces
                     et
-                    transformez la façon dont vous gérez vos feuilles de calcul. Facilité, collaboration et temps réel -
+                    transformez la façon dont vous gérez vos feuilles de calcul. </br>Facilité, collaboration et temps réel -
                     c'est
-                    Easy Collab.
-                </strong></h4></div>
+                    EasyCollab.
+                </strong></p></div>
     <% } %>
 
 </div>
