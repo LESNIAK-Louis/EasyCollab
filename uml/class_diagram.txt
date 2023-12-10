@@ -11,11 +11,17 @@ password : string
 
 class Sheet{
 id : number
-name : string
 data : dict<[number,number], string>
+version : number
 }
 
-EasyCollab -"*" User
-User -"*" Sheet
+EasyCollab --"*" User
+Sheet "*"--  EasyCollab
 
+Sheet -"*" User : users
+Sheet -"*" User : usersOnPage
+Sheet -"1" User : owner
+
+Sheet "*"-  User : ownedSheets 
+Sheet "*"-  User : sharedSheets 
 @enduml
