@@ -40,7 +40,6 @@ app
     .get("/sheet/usersOnPage/:sheetId", routes.usersOnPage)
     
     // POST
-    .post("/", routes.index)
     .post("/account/signin", routes.login)
     .post("/account/signup", routes.register)
     .post("/account/signoff", routes.logoff)
@@ -48,9 +47,10 @@ app
     .post("/sheet/subscribe/:sheetId", routes.subscribeSheet)
     .post("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
     // PUT
-    .put("/sheet/:sheetId", routes.editSheet)
-    .put("/sheet/users/:sheetId", routes.editSheetUsers)
     .put("/sheet/rename/:sheetId", routes.editSheetName)
+    // PATCH
+    .patch("/sheet/users/:sheetId", routes.editSheetUsers)
+    .patch("/sheet/:sheetId", routes.editSheet)
     // DELETE
     .delete("/sheet/:sheetId", routes.removeSheet)
     //
