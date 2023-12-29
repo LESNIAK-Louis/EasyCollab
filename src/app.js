@@ -42,7 +42,6 @@ app
     // POST
     .post("/account/signin", routes.login)
     .post("/account/signup", routes.register)
-    .post("/account/signoff", routes.logoff)
     .post("/sheet/new", routes.newSheet)
     .post("/sheet/subscribe/:sheetId", routes.subscribeSheet)
     .post("/sheet/unsubscribe/:sheetId", routes.unSubscribeSheet)
